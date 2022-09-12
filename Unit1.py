@@ -27,6 +27,9 @@ def FrequencyTable(Text,k):
     #print(freq)
     return freq
 
+#This method returns the highest value in a dictionary
+#Input: dict- dictionary
+#Output: max_value - the maximum value in the dictionary
 def MaxMap(dict):
     max_value=-1
     for keys in dict:
@@ -34,6 +37,9 @@ def MaxMap(dict):
             max_value=dict[keys]
     return max_value
 
+#This method 
+#Input:Text: string 
+#Output: returns a list freq_patterns that contains 
 def FrequentWords (Text,k):
     freq_patterns=[]
     map=FrequencyTable(Text,k)
