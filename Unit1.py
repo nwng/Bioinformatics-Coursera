@@ -100,6 +100,13 @@ def FindClumps(text,k, L,t):
 
 #Week 2
 
+# This method calculates the skew of a DNA string.
+# Skew is a measure of the G and C content of a DNA string
+# and is defined by +1 for G and -1 for C. The skew can be used
+# to find the origin of replication in a bacterial genome
+# Input: A string genome
+# Output: A list that shows the skew at a given index of the genome
+
 def Skew(genome):
     genome=genome.upper()
     skew=[0]
@@ -122,6 +129,10 @@ def PrintListFlat(list):
         out+= str(list[i])+" "
     print(out)
 
+# This method takes a genome and returns the location where the skew 
+# is the smallest
+# Input: A string genome
+# Output: a list containing the indices in genome where skew is the smallest
 def MinSkew(genome):
     skew=Skew(genome)
     out=[]
@@ -171,6 +182,10 @@ def ApproxPatternMatch(pattern,text,d):
     #PrintListFlat(locations)
     return locations
 
+# This method counts the instances a pattern appears in a text with at most d
+# mismatches
+# Input: pattern is a string, text is a string, and d is an int
+# Output: An int count of the number of times a pattern appears in a text
 def ApproxPatternCount(text,pattern,d):
     count=0
     n=len(text)
@@ -181,9 +196,14 @@ def ApproxPatternCount(text,pattern,d):
     #print(count)
     return count
 
+# This is a recursive method that returns all possible patterns
+# with at most d differences from pattern
+# Input: A string pattern and a positive integer d
+# Output: A list containing the patterns and strings that have at
+# most d mistmatches from the pattern
 def Neightbors(pattern,d):
     #Base cases of the recursive alg
-    if d == 0:
+    if d == 0: #If distance is 0, return original pattern
         return pattern
     if len(pattern)==1:
         return ['A','C','G','T']
@@ -192,7 +212,6 @@ def Neightbors(pattern,d):
     SuffixNeighbors=Neightbors(pattern[1::],d)
     for i in range(len(SuffixNeighbors)):
         text=SuffixNeighbors[i]
-
         if Hamming(text,pattern[1::]) < d:
             for nucleotide in ['A','C','G','T']:
                 Neightborhood.append(nucleotide+text)
@@ -202,6 +221,11 @@ def Neightbors(pattern,d):
     #print()
     return Neightborhood
 
+# This method finds the most frequent patterns of length k in a
+# string text with at most d mismatches
+# Input: A string text, a int k, and an int d
+# Output: A list with all patterns that appear the most frequently
+# in a string with at most d mismatches
 def FreqWordsWithMismatches(text,k,d):
     pattern = []
     freqmap={}
@@ -224,6 +248,12 @@ def FreqWordsWithMismatches(text,k,d):
     PrintListFlat(pattern)
     return pattern
 
+# This method finds the most frequent patterns of length k in a
+# string text with at most d mismatches. This method also checks
+# if the pattern appears as a reverse complement in the text
+# Input: A string text, a int k, and an int d
+# Output: A list with all patterns that appear the most frequently
+# in a string with at most d mismatches
 def FreqWordWithMismatchAndRevComp(text,k,d):
     #Initialize variables for this method
     pattern = []
@@ -262,6 +292,11 @@ def FreqWordWithMismatchAndRevComp(text,k,d):
     return pattern
 
 # Week 3
+# This method takes a DNA string that is deliminated by
+# a space and stores each DNA sequence as a separate element
+# in a list
+# Input: DNA string that has sequences separated by " "
+# Output: A list that contains each sequence
 def DNAStringtoList(DNA_string):
     curr_seq=''
     DNA_list=[]
@@ -274,6 +309,13 @@ def DNAStringtoList(DNA_string):
     DNA_list.append(curr_seq)
     return DNA_list
 
+# This method seaches for patterns that have a length k that
+# appear with at most d mismatches in DNA sequences in a list 
+# of DNA sequences
+# Input: DNA is a list of dna sequences, k is a positive int, 
+# and d is a positive int
+# Output: A list of all patterns that appear in all DNA strings with
+# at most d mimatches in a list of DNA sequences
 def MotifEnumeration(DNA,k,d):
     patterns=[]
     kmers=[]
@@ -312,6 +354,7 @@ def MotifEnumeration(DNA,k,d):
     #PrintListFlat(patterns)
     return patterns
 
+# This method helps print a list of lists
 def MatrixPrint(Matrix):
     for i in range(len(Matrix)):
         out=''
@@ -319,11 +362,19 @@ def MatrixPrint(Matrix):
             out+=str(Matrix[i][j]) + " "
         print(out)
 
+
+# This method calculates the distance between a pattern
+# and a list of strings. Distance is defined as the sum of
+# all minimum hamming distances of the pattern and a substring
+# of DNA
+# Input: A string pattern and a list of strings DNA
+# Output: An int distance
+import math
 def DistBetweenPatternAndString(Pattern,DNA):
     k=len(Pattern)
     distance=0
     for line in DNA:
-        ham=1000000000000000
+        ham= math.inf
         for i in range(len(line)-k+1):
             text=line[i:i+k]
             if ham > Hamming(text,Pattern):
@@ -332,13 +383,15 @@ def DistBetweenPatternAndString(Pattern,DNA):
     #print(distance)
     return distance
 
+# This method generates all possible DNA strings of length k
+# Input: A positive int k
+# Output: A list of every possible DNA sequence of length k
 def AllStrings(k):
     pattern=""
     for i in range(k):
         pattern+="A"
     return Neightbors(pattern,len(pattern))
 
-import math
 def MedianString(DNA,k):
     distance=math.inf
     patterns=AllStrings(k)
@@ -478,16 +531,6 @@ def Motifs(Profile,DNA):
         motif.append(ProfileMostProbablePattern(DNA[i],k,Profile))
     return motif
 
-# pro= {'A': [4/5,0,0,1/5],'C':[0,3/5,1/5,0], 'G':[1/5,1/5,4/5,0],"T":[0,1/5,0,4/5]}
-# print(pro)
-# DNA=[
-#     "TTACCTTAAC",
-#     "GATGTCTGTC",
-#     'ACGGCGTTAG',
-#     'CCCTAACGAG',
-#     'CGTCAGAGGT'
-# ]
-# print(Motifs(pro,DNA))
 
 import random
 def RandomizedMotifSearch(DNA, k ,t):
@@ -519,48 +562,6 @@ def MultiRandomSearch(DNA,k,t,n):
             bestScore=Score(motif)
             out=motif
     return out
-
-import math
-def Entropy(Motif):
-    profile=Profile(Motif)
-    entropy=0
-    for j in range(len(profile['A'])):
-        tempEnt=0
-        for base in ['A','C','G','T']:
-            prob=profile[base][j]
-            if prob != 0:
-                tempEnt+=prob*math.log2(prob)
-        print(-tempEnt)
-        entropy+=-tempEnt
-    print()
-    print(entropy)
-    return entropy
-
-p1 = float ( (600.-15) / (600.-15+1)   )
-p2 = 1 - p1
-from itertools import *
-counter = 0
-for seq in combinations(range(10),2):
-    counter +=1
-#print(pow(p2,2) * pow(p1,8) * counter)
-
-def Random(prob):
-    sum=0
-    for i in range(len(prob)):
-        sum+=prob[i]
-
-    if sum>1:
-        for i in range((len(prob))):
-            prob[i]/=sum
-
-    sum=round(sum)*100
-    num = random.randint(0,sum)/100.
-    distribution=0
-    for i in range(len(prob)):
-        if distribution<= num and num < distribution+prob[i]:
-            return i
-        else:
-            distribution+=prob[i]
 
 def ProfileRandomPattern(Text, k, Profile):
     #Generate Dictionary of all the kmers in the text
