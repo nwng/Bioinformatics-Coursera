@@ -37,8 +37,9 @@ def MaxMap(dict):
             max_value=dict[keys]
     return max_value
 
-#This method 
-#Input:Text: string 
+#This method finds the frequent k lengthed substring patterns in a string Text
+#Input:Text: string and k an int that is the length ot the 
+#pattern sought for
 #Output: returns a list freq_patterns that contains 
 def FrequentWords (Text,k):
     freq_patterns=[]
@@ -49,10 +50,14 @@ def FrequentWords (Text,k):
             freq_patterns.append(keys)
     return freq_patterns
 
+#This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
         print(output[i])
 
+#This method finds the reverse complement of a DNA sequence
+#Input: DNA is a string containing only A,C,G,or T
+#Output: A string that is the reverse complement of DNA
 def RevComp(DNA):
     DNA=DNA.upper()
     cDNA=""
@@ -68,6 +73,10 @@ def RevComp(DNA):
     #print(cDNA[::-1])
     return cDNA[::-1]
 
+#This method finds instances of a pattern in a genome. This seaches for both the
+#pattern and its reverse complement in the genome
+#Input: Pattern - a string and Genome another string
+#Output: A list containing the index of where the pattern appears in the genome
 def PatternMatch(pattern,genome):
     matches=[]
     for i in range(len(genome)-len(pattern)+1):
@@ -105,6 +114,8 @@ def Skew(genome):
     #PrintListFlat(skew)
     return skew
 
+#This method combines all elements in a list into a single string
+#and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
@@ -121,6 +132,10 @@ def MinSkew(genome):
     PrintListFlat(out)
     return out
 
+#This method calculates the hamming distance between two strings
+#Input: text1 and text2 are two strings
+#Output: distance which is an int that counts the number of instances the two stings
+#do not match
 def Hamming(text1,text2):
     n=len(text1)
     l=len(text2)
@@ -141,6 +156,11 @@ def Hamming(text1,text2):
     #print(distance)
     return distance
 
+# This method finds when a pattern appears in a text with at most d
+# mismatches
+# Input: pattern is a string, text is a string, and d is an int
+# Output: A list locations that contains the index of where the pattern
+# can be found in the text
 def ApproxPatternMatch(pattern,text,d):
     locations=[]
     n=len(text)
