@@ -1,3 +1,9 @@
+#Code is from Finding Hidden Messages in DNA (Bioinformatics I)
+
+#PatternCount
+#A method used to count the number of times Pattern occurs in Text
+#Inputs: Text- a string and Pattern a string
+#Output; Count: The number of times Pattern occurs in Text
 def PatternCount(Text,Pattern):
     count = 0
     for i in range(len(Text)-len(Pattern)+1):
@@ -7,6 +13,10 @@ def PatternCount(Text,Pattern):
     print(count)
     return count
 
+#A method used to determine the number of
+#inputs: Text is a string, k is an int
+#output: freq: a dictionary that contains each unique kmer within the 
+#text and the number of times the kmer appears in the Text
 def FrequencyTable(Text,k):
     freq={}
     for i in range(len(Text)-k+1):
