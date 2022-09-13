@@ -2,6 +2,7 @@
 
 
 ####Helper Methods from Previous Unit
+
 # This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
@@ -121,6 +122,12 @@ def Prefix(pattern):
 def Suffix(pattern):
     return pattern[1::]
 
+# This method takes a string of DNA sequences
+# Input: A string of DNA sequences delimited by " "
+# Output: A dictionary graph with keys that are DNA 
+# sequences from patterns and the corresponding values are 
+# sequences that overlap with the key such that the
+# Suffix(key)==Prefix(pattern)
 def OverlapGraph(patterns):
     graph={}
     patternsList=DNAStringtoList(patterns)
@@ -145,6 +152,8 @@ def OverlapGraph(patterns):
         graph.pop(toRemove)
     return graph
 
+# This method takes a dictionary graph and prints each
+# key and its corresponding values one key per line
 def PrintGraph(graph):
     keys = list(graph.keys())
     keys.sort()
@@ -154,6 +163,12 @@ def PrintGraph(graph):
             out+=" "+str(graph[key][i])
         print(str(key)+":"+out)
 
+# This method generates combinations of either 
+# 0's or 1's with a mismatch d
+# Input: pattern is a string consisting of either 0's or 1's
+# and d is a positve int
+# Output: A list of all combinations of 0's and 1's with at most
+# d mismatches
 def BinaryNeightbors(pattern,d):
     #Base cases of the recursive alg
     if d == 0:
@@ -172,6 +187,10 @@ def BinaryNeightbors(pattern,d):
             Neightborhood.append(pattern[0]+text)
     return Neightborhood
 
+# This method takes a string text and breaks it into 
+# edges of length k and stores the corresponding nodes
+# Input: A positive int k and a string text
+# Output: A list of lists nodes and edges
 def PathGraph(k,text):
     edge=[]
     node=[]
@@ -180,6 +199,11 @@ def PathGraph(k,text):
         node.append(text[i:i+k-1])
     return [node,edge]
 
+# This method generates a DeBruijn Graph
+# from a complete genome
+# Input: A string text and a positive int k
+# Output: A dictionary with a DeBruijn graph
+# with fragments of length k
 def DeBruijnGraph(k,text):
     graph={}
     path=PathGraph(k,text)
@@ -196,6 +220,11 @@ def DeBruijnGraph(k,text):
 
     return graph
 
+# This method generates a DeBruijn Graph
+# from a list of strings pattern
+# Input: A list of strings patterns and a positive int k
+# Output: A dictionary with a DeBruijn graph
+# with fragments of length k
 def DeBruijn(patterns):
     #patternList=DNAStringtoList(patterns)
     graph={}
@@ -212,6 +241,9 @@ def DeBruijn(patterns):
     return graph
 
 ##Week 2
+
+# This is a helper method to read text files
+# and store the output as a dictionary
 def dictFromText(filename, dest = 0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -228,8 +260,12 @@ def dictFromText(filename, dest = 0):
             dict[main_node].append(adjNode.strip())
     return dict
 
-#print(dictFromText('adjList.txt'))
-
+# This method solves a EulerianCycle in a given graph
+# Input: A dictionary graph and an optional argument
+# for a set starting node. Default is to choose a random
+# starting node
+# Output: A list cycle that contains the order of nodes
+# that complete a EulerianCycle from the given graph
 def EulerianCycle(graph,curr_node=0):
     stack=[]
     cycle=[]
@@ -261,6 +297,11 @@ def EulerianCycle(graph,curr_node=0):
             curr_node=temp_node[:]
     return cycle[::-1]
 
+
+# This method solves a Eulerian Path in a given graph
+# Input: A dictionary graph 
+# Output: A list path that contains the order of nodes
+# that complete a Eulerian Path
 import copy
 def EulerianPath(graph):
     path=[]
@@ -308,16 +349,27 @@ def EulerianPath(graph):
     path.pop(-1)
     return path
 
-def StringReconstruction(k,patterns):
+# This method reconstructs a genome from a collection 
+# of DNA strings
+# Input: A list of strings patterns of equal length
+# Output: A string that represents a reconstructed genome
+def StringReconstruction(patterns):
+    # Generates a DeBruijn graph from the given patterns
     dB=DeBruijn(patterns)
-    #PrintGraph(dB)
+    # PrintGraph(dB)
     print("de Bruijn graph is done")
     print('Searching for Path...')
+    # Solving a Eulerian Path through the graph 
     path=EulerianPath(dB)
     print('Path Done')
+    # Concatenates the path to form a reconstructed genome
     genome=PathToGenome(path)
     return genome
 
+# This method generates a universal binary circular string
+# consisting of fragments of length k
+# Input: A positive int k
+# Output: A string out that contains the sequence 
 def UniversalCircularString(k):
     first_kmer=""
     for i in range(k):
@@ -332,22 +384,26 @@ def UniversalCircularString(k):
         out+=genome[i]
     return out
 
-#print(UniversalCircularString(9))
-
+# This method breaks a genome into paired reads
+# Input: A string genome, a positive int k, and 
+# a positive int d that is the distance between
+# the read pairs
+# Output: a list of paired reads from the genome
 def PairedComposition(genome,k,d):
-    out=[]
+    pairedRead=[]
     for i in range(len(genome)-2*k-d+1):
         pattern1=genome[i:i+k]
         pattern2=genome[i+k+d:i+d+k+k]
         out.append([pattern1,pattern2])
-    out.sort()
+    pairedRead.sort()
     outString=""
-    for i in range(len(out)):
-        outString+="("+str(out[i][0])+"|"+str(out[i][1])+") "
+    for i in range(len(pairedRead)):
+        outString+="("+str(pairedRead[i][0])+"|"+str(pairedRead[i][1])+") "
     print(outString)
-    return out
-#PairedComposition('TAATGCCATGGGATGTT',3,2)
+    return pairedRead
 
+# This method stores paired reads from a text file and
+# stores them in a list
 def PairedReadsFromText(filename, dest = 0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -363,6 +419,10 @@ def PairedReadsFromText(filename, dest = 0):
             out.append([pattern1.strip(),pattern2.strip()])
     return out
 
+# This method returns the prefix from a paried read
+# Input: A list with two elements that are a paired read
+# Output: A string with the prefix of each pattern from read
+# separated by a "|"
 def PairedPrefix(read):
     temp_pattern1=read[0]
     temp_pattern2=read[1]
@@ -374,14 +434,20 @@ def PairedPrefix(read):
         pattern2+=temp_pattern2[i]
     return str(pattern1)+"|"+str(pattern2)
 
+# This method returns the suffix from a paried read
+# Input: A list with two elements that are a paired read
+# Output: A string with the suffix of each pattern from read
+# separated by a "|"
 def PairedSuffix(read):
     pattern1=read[0]
     pattern2=read[1]
 
     return str(pattern1[1::])+"|"+str(pattern2[1::])
 
-#print(PairedSuffix(['GAC','TCA']))
-
+# This method generates a DeBruijn graph from paired reads
+# Input: A list of strings patterns of equal length
+# Output: A dictionary graph that contains a DeBruijn graph
+# from the paired reads
 def DeBruijnPairedReads(readsList):
     #patternList=DNAStringtoList(patterns)
     graph={}
@@ -399,6 +465,8 @@ def DeBruijnPairedReads(readsList):
             graph[pre].append((suf))
             graph[pre].sort()
     return graph
+
+
 
 def StringSpelledByGappedPatterns(GappedPatterns,k,d):
     firstPatterns=[]
@@ -644,16 +712,47 @@ def Translation(RNA):
         'CCG': 'P',
         'ACG': 'T',
         "GCG": 'A',
-        'UAU': 'Y',      'CAU': 'H' ,     'AAU': 'N',      'GAU': 'D',
-        'UAC': 'Y',      'CAC': 'H',      'AAC': 'N',      'GAC': 'D',
-        'UAA': 'Stop'   ,'CAA':'Q'     ,"AAA": 'K',      "GAA": 'E',
-        'UAG':'Stop',   'CAG': 'Q',      'AAG': 'K',      'GAG': 'E',
-        'UGU': 'C'    ,  "CGU": 'R'    ,  "AGU": 'S',      'GGU': 'G',
-        'UGC': 'C',      "CGC": 'R',      "AGC": 'S',      'GGC': 'G',
-        'UGA':'Stop' ,  'CGA':'R',      'AGA':'R',      "GGA" :'G',
-        'UGG': 'W' ,     'CGG': 'R',      'AGG': 'R',      'GGG': 'G',
-        'CUU': 'L',      'AUU': 'I' ,     'GUU': 'V', "CUC": 'L', 'AUC': 'I',      'GUC': 'V',
-        'CUA': 'L',      'AUA': 'I',      'GUA': 'V'
+        'UAU': 'Y',      
+        'CAU': 'H',     
+        'AAU': 'N',      
+        'GAU': 'D',
+        'UAC': 'Y',      
+        'CAC': 'H',      
+        'AAC': 'N',      
+        'GAC': 'D',
+        'UAA': 'Stop',
+        'CAA':'Q',
+        "AAA": 'K',      
+        "GAA": 'E',
+        'UAG':'Stop',   
+        'CAG': 'Q',      
+        'AAG': 'K',      
+        'GAG': 'E',
+        'UGU': 'C',  
+        "CGU": 'R', 
+        "AGU": 'S',      
+        'GGU': 'G',
+        'UGC': 'C',      
+        "CGC": 'R',      
+        "AGC": 'S',      
+        'GGC': 'G',
+        'UGA':'Stop',  
+        'CGA':'R',      
+        'AGA':'R',      
+        "GGA" :'G',
+        'UGG': 'W' ,     
+        'CGG': 'R',      
+        'AGG': 'R',      
+        'GGG': 'G',
+        'CUU': 'L',      
+        'AUU': 'I',     
+        'GUU': 'V', 
+        "CUC": 'L', 
+        'AUC': 'I',      
+        'GUC': 'V',
+        'CUA': 'L',      
+        'AUA': 'I',      
+        'GUA': 'V'
     }
     seq=''
     for i in range(int(len(RNA)/3)):
@@ -1111,8 +1210,3 @@ def ConvolutionCyclopeptideSequencing(M,N,Spectrum):
     print(LeaderPeptide[::-1])
     print(PeptideToMass(LeaderPeptide[::-1]))
     return LeaderPeptide
-
-spec=SpecFromText('spec.txt')
-
-out=SpectrumConvolution(spec)
-print(out)
