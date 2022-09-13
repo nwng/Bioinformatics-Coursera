@@ -616,7 +616,11 @@ def MultiRandomSearch(DNA,k,t,n):
             out=motif
     return out
 
-# This method returns a random pattern
+# This method returns a random pattern of length k from a 
+# Input: A string Text, a positive int k, and a list profile
+# that is a probability matrix 
+# Output: A random substring from the string text, that is chosen based
+# on the weights given in the probability profile
 def ProfileRandomPattern(Text, k, Profile):
     #Generate Dictionary of all the kmers in the text
     kmerDict = {}
@@ -632,7 +636,14 @@ def ProfileRandomPattern(Text, k, Profile):
         prob.append(Pr(kmer, Profile))
     return random.choices(kmerList,prob)[0]
 
-
+# This is a Monte Carlo random algorithm that selects the best
+# This differs from random search in that instead of replacing all
+# current motifs, it replaces one at a time
+# Input: A list of strings DNA, a positive int k that is the length
+# of the found motifs, t a positive int that is the number of strings
+# in the list DNA, and n a positive int that is the number of iterations
+# to run the Sampler
+# Output: a list of the best motifs from each string in the list DNA
 def GibbsSampler(DNA,k,t,n):
     temp_Motif = []
     # Randomly Chooses a set of k-mers from all strings
@@ -653,6 +664,15 @@ def GibbsSampler(DNA,k,t,n):
             bestMotif=temp_Motif[:]
 
     return bestMotif
+
+# This method runs GibbsSampler m times, and returns the
+# best scoring motif
+# Input: A list of strings DNA, a positive int k that is the length
+# of the found motifs, t a positive int that is the number of strings
+# in the list DNA, and n a positive int that is the number of iterations
+# to run the Sampler, and m is a positive int that is the number of iterations,
+# to run the entire GibbsSampler method
+# Output: a list of the best motifs from each string in the list DNA
 
 def MultiGibbs(DNA,k,t,n,m):
     bestScore=math.inf
