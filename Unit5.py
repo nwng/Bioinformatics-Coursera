@@ -275,22 +275,6 @@ def MaxDistance(data,centers):
     return maxDistance
 
 
-# data=[[2, 6], [4, 9], [5, 7], [6, 5], [8, 3] ]
-# centers=[ [4, 5], [7, 4]]
-# print("Max Distance")
-# print(MaxDistance(data,centers))
-# print()
-#
-# data1=[[2, 6], [4, 9], [5, 7], [6, 5], [8, 3] ]
-# centers1=[[4, 5], [7, 4]]
-# print("Distortion")
-# print(SqErrorDistortion(centers1,data1))
-# print()
-#
-# print("Center of Gravity")
-# points=[[17, 0, -4], [3, 14, 23], [9, 7, 16], [7, 3, 5]]
-# print(CenterOfGravity(points))
-
 def Pr(n,Data,Theta):
     return Theta**(n*Data)*(1-Theta)**(n*(1-Data))
 
@@ -366,25 +350,3 @@ def HierarchicalClustering(D,n):
     # print()
     # print(Clusters)
     PrintList(T)
-
-
-#matrix= MatrixFromText('trav.txt')
-#HierarchicalClustering(matrix,20)
-# quest1=(0.7**5)*(0.3**1)
-# print(round(quest1,3))
-# print()
-#
-# d1=(0**2)+(2**2)
-# d2=(2**2)+(3**2)
-# prob=(1/d1)/((1/d1)+(1/d2))
-# print(round(prob,3))
-# print()
-#
-# num = (2*.6) + (4*.1) + (5*.8) + (6*.5) + (8*.7)
-# denom=.6+.1+.8+.5+.7
-# print(round(num/denom,3))
-# num = (6*.6) + (9*.1) + (7*.8) + (5*.5) + (3*.7)
-# print(round(num/denom,3))
-# print()
-
-print(.75**4)
