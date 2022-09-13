@@ -466,8 +466,12 @@ def DeBruijnPairedReads(readsList):
             graph[pre].sort()
     return graph
 
-
-
+# This method returns a genome from a collection of paired reads
+# Input: A list of an ordered set of paired reads GappedPatterns, a 
+# positive int k that is the length of a read, and d a positive int 
+# that separates the paired reads
+# Output: A string that represents the reconstructed string from the paired 
+# reads. Returns none if no string exists
 def StringSpelledByGappedPatterns(GappedPatterns,k,d):
     firstPatterns=[]
     secondPatterns=[]
@@ -487,6 +491,12 @@ def StringSpelledByGappedPatterns(GappedPatterns,k,d):
             return None
     return prefixString+suffixString[-1*(k+d):]
 
+# This method returns a genome from a collection of paired reads
+# Input: A list of a set of paired reads patterns, a positive int 
+# k that is the length of a read, and d a positive int that 
+# separates the paired reads
+# Output: A string that represents the reconstructed string from the paired 
+# reads. Returns none if no string exists
 def PairedStringReconstruction(k,d,patterns):
     dB=DeBruijnPairedReads(patterns)
     #print(dB)
@@ -498,8 +508,13 @@ def PairedStringReconstruction(k,d,patterns):
     genome=StringSpelledByGappedPatterns(path,k,d)
     return genome
 
+# This method takes a dictionary graph and returns a maximal
+# non-branching path from the graph
+# Input: A dictionary graph
+# Output: A list Paths that contain all non-branching paths
 def MaximalNonBranchingPaths(graph):
     Paths=[]
+    
     # Get all possible nodes in the graph
     allNodes = {}
     edge_List = []
@@ -527,18 +542,11 @@ def MaximalNonBranchingPaths(graph):
             countDict[node]=[in_count,0]
 
     for node in countDict:
-        #print('Current node is node: '+str(node))
         in_v= countDict[node][0]
-        #print('in degrees is: '+str(in_v))
         out_v = countDict[node][1]
-        #print('out degrees is: ' + str(out_v))
         if in_v!=1 or out_v!=1:
-            #print('Not a 1-1 node')
             if out_v>0:
-                #print("Out degree is greater than 0")
                 for edge in graph[node]:
-                    #print('next node is: '+str(edge))
-                    #print(countDict[edge])
                     edge_in=countDict[str(edge)][0]
                     edge_out=countDict[str(edge)][1]
                     NonBranch=[node]
@@ -555,19 +563,14 @@ def MaximalNonBranchingPaths(graph):
     cycleList=[]
     for node in graph:
         cycle=[node]
-        #print('Node is: '+str(node))
         curr_node=str(graph[node][0])
-        #print('Next Node is: ' + str(curr_node))
         while str(curr_node)!=str(node):
             cycleKeys = dict.fromkeys(cycle)
-            #print("Nodes in current cycle: ")
-            #print(cycleKeys)
+
             if curr_node in cycleKeys:
-                #print('Repeat Node')
                 break
             cycle.append(curr_node)
             if curr_node not in graph:
-                #print('Node not in graph')
                 break
             elif len(graph[curr_node])>0:
                 curr_node=str(graph[curr_node][0])
@@ -577,46 +580,31 @@ def MaximalNonBranchingPaths(graph):
             cycle.append(curr_node)
             cycleList.append(cycle)
 
-    # #Remove duplicate cycles
-    #PrintList(cycleList)
+    # Remove duplicate cycles
+
     to_remove=[]
     for i in range(len(cycleList)-1):
         keys=dict.fromkeys(cycleList[i])
         keys=list(keys.keys())
         keys.sort()
-        #print()
-        #print('Keys: ' + str(i))
-        #PrintListFlat(keys)
+
         for j in range(i+1,len(cycleList)):
             other_keys=dict.fromkeys(cycleList[j])
             other_keys=list(other_keys.keys())
             other_keys.sort()
-            #print('Other Keys '+str(j))
-            #PrintListFlat(other_keys)
             remove= True
             if len(keys)!=len(other_keys):
-                #print('not the same length')
                 remove=False
             else:
                 for k in range(len(keys)):
                     if other_keys[k]!=keys[k]:
-                        #print('mismatch here: '+str(k))
-                        #print('keys: ' + str(keys[k]))
-                        #print('other keys: ' + str(other_keys[k]))
                         remove=False
             if remove:
                 to_remove.append(i)
                 to_remove=dict.fromkeys(to_remove)
                 to_remove=list(to_remove.keys())
-                #print('Will remove: ')
-                #PrintListFlat(to_remove)
-    # print()
-    # PrintList(cycleList)
-    # print()
-    # PrintListFlat(to_remove)
+
     to_remove=to_remove[::-1]
-    # print(to_remove)
-    # print()
 
     for key in to_remove:
         cycleList.pop(key)
@@ -655,13 +643,12 @@ def MaximalNonBranchingPaths(graph):
     #    PrintListFlat(path)
     return Paths
 
+# This method generates contigs from a collection of DNA strings
+# Input: A list of strings patterns
+# Outputs: A list of strings of the reconstructed contigs
 def Contig(patterns):
     dB=DeBruijn(patterns)
-    #PrintGraph(dB)
-    #print()
     maxPaths=MaximalNonBranchingPaths(dB)
-    #PrintList(maxPaths)
-    #print()
     contigs=[]
     for path in maxPaths:
         contigs.append(PathToGenome(path))
@@ -687,6 +674,9 @@ def Unit2Week2InputReader(filename,problem):
 
 #Week 3
 
+# This method translates a string RNA into an amino acid
+# Input: A string RNA
+# Output: A string seq that is the peptide sequence
 def Translation(RNA):
     codon={
         "UUU":"F",
@@ -765,6 +755,9 @@ def Translation(RNA):
     #print(seq)
     return seq
 
+# This method transcribes DNA into an RNA string
+# Input: A string of DNA
+# Output: A string of RNA
 def DNA2RNA(dna):
     #dna=dna.upper()
     rna=''
@@ -775,6 +768,11 @@ def DNA2RNA(dna):
             rna+=dna[i]
     return rna
 
+# This method determines if a peptide is found in a DNA 
+# string
+# Input: A string of DNA text and a string peptide
+# Output: A list of the locations indicating where the
+# peptide can be found in the string Text
 def PeptideEncoding(Text,peptide):
     k=len(peptide)*3
     rna=DNA2RNA(Text)
@@ -791,9 +789,10 @@ def PeptideEncoding(Text,peptide):
             peptide_location.append(dna_seq)
         if rev_curr_peptide==peptide:
             peptide_location.append(dna_seq)
-
     return peptide_location
 
+# This method reads a genome from a text file
+# and returns a string
 def GenomeFromText(filename,dest=0):
     genome=""
     if dest==0:
@@ -807,6 +806,10 @@ def GenomeFromText(filename,dest=0):
         genome+=line.strip()
     return genome
 
+# This method calculates the approximate mass
+# of a peptide
+# Input: A string peptide
+# Output: An int mass
 def PeptideMass(peptide):
     mass=0
     massTable={
@@ -837,6 +840,12 @@ def PeptideMass(peptide):
     for i in range(len(peptide)):
         mass+=massTable[peptide[i]]
     return mass
+
+# This method takes an int mass and returns
+# the peptide of that mass. For masses 113 and 128
+# only I and K are given
+# Input: An int mass
+# Output: A string corresponding to the amino acid with the given mass
 
 def MassToPeptide(mass):
     if mass == 57:
@@ -878,7 +887,12 @@ def MassToPeptide(mass):
     else:
         return ""
 
-
+# This method takes a string peptide and returns
+# a string comprising the masses of each amino acid
+# in the peptide separated by "-"
+# Input: A string peptide
+# Output: A string of amino acid masses separated by
+# "-"
 def PeptideToMass(peptide):
     mass=""
     massTable={
@@ -910,8 +924,9 @@ def PeptideToMass(peptide):
         mass+=str(massTable[peptide[i]])+"-"
     return mass[:-1]
 
-#print(PeptideMass('LQN'))
-
+# This method generates the linear mass spectrum of a peptide
+# Input: A string peptide
+# Output: A list spectrum that contains the mass spectrum of the peptide
 def LinearSpectrum(Peptide):
     PrefixMass=[0]
     massTable = {
@@ -948,6 +963,9 @@ def LinearSpectrum(Peptide):
     spectrum.sort()
     return spectrum
 
+# This method generates the cyclic mass spectrum of a peptide
+# Input: A string peptide
+# Output: A list spectrum that contains the mass spectrum of the peptide
 def CyclicSpectrum(Peptide):
     spectrum=LinearSpectrum(Peptide[:-1])
     TotalMass=PeptideMass(Peptide)
@@ -960,6 +978,10 @@ def CyclicSpectrum(Peptide):
     spectrum.sort()
     return spectrum
 
+# This method calculates the number of subpeptides
+# that can be generated from a peptide of length n
+# Input: An int n
+# Output: A int sum
 def Subpeptides(n):
     sum=0
     for i in range(n):
@@ -969,24 +991,7 @@ def Subpeptides(n):
 def PeptideExpander(peptideSet):
     expanded=set()
     for peptide in peptideSet:
-        for ammino_acid in ['G',
-        'A',
-        'S',
-        'P',
-        'V',
-        'T',
-        'C',
-        'I',
-        'N',
-        'D',
-        'K',
-        'E',
-        'M',
-        'H',
-        'F',
-        'R',
-        'Y',
-        'W']:
+        for ammino_acid in ['G', 'A','S','P','V','T','C','I','N','D','K','E','M','H','F','R','Y','W']:
             expanded.add(str(peptide)+str(ammino_acid))
     return expanded
 
