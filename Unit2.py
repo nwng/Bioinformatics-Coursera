@@ -1,13 +1,25 @@
+# This code was implemented for Genome Sequencing (Bioinformatics II) 
+
+
+####Helper Methods from Previous Unit
+# This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
         print(output[i])
 
+        #This method combines all elements in a list into a single string
+#and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
         out+= str(list[i])+" "
     print(out)
 
+# This method takes a DNA string that is deliminated by
+# a space and stores each DNA sequence as a separate element
+# in a list
+# Input: DNA string that has sequences separated by " "
+# Output: A list that contains each sequence
 def DNAStringtoList(DNA_string):
     curr_seq=''
     DNA_list=[]
@@ -20,6 +32,10 @@ def DNAStringtoList(DNA_string):
     DNA_list.append(curr_seq)
     return DNA_list
 
+#This method calculates the hamming distance between two strings
+#Input: text1 and text2 are two strings
+#Output: distance which is an int that counts the number of instances the two stings
+#do not match
 def Hamming(text1,text2):
     n=len(text1)
     l=len(text2)
@@ -40,6 +56,9 @@ def Hamming(text1,text2):
     #print(distance)
     return distance
 
+#This method finds the reverse complement of a DNA sequence
+#Input: DNA is a string containing only A,C,G,or T
+#Output: A string that is the reverse complement of DNA
 def RevComp(DNA):
     DNA=DNA.upper()
     cDNA=""
@@ -54,11 +73,15 @@ def RevComp(DNA):
             cDNA+="A"
     #print(cDNA[::-1])
     return cDNA[::-1]
-
+###########################################################
 
 import random
 ### Unit 2
 ### Week 1
+
+# Input: A string Text and a positive int k
+# Output: A list of all substrings of length k 
+# from the text
 def Composition(Text,k):
     comp=[]
     for i in range(len(Text)-k+1):
@@ -66,6 +89,11 @@ def Composition(Text,k):
     #comp.sort()
     return comp
 
+# This method stitches together a path list to complete
+# a path. This is used to stitch together a list of kmers
+# to reconstruct a genome
+# Input: A list of strings pathList
+# Output: The 
 def PathToGenome(pathList):
     genome=""
     #pathList=DNAStringtoList(path)
@@ -78,10 +106,18 @@ def PathToGenome(pathList):
             genome+=pathList[i][-1]
     return genome
 
+# This method returns the prefix defined as substring of a 
+# string consisting of the entire string except the last element
+# Input: A string pattern
+# Output: A prefix substring
 def Prefix(pattern):
     k=len(pattern)
     return pattern[0:k-1]
 
+# This method returns the suffic defined as substring of a 
+# string consisting of the entire string except the first element
+# Input: A string pattern
+# Output: A suffix substring
 def Suffix(pattern):
     return pattern[1::]
 
