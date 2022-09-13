@@ -392,6 +392,12 @@ def AllStrings(k):
         pattern+="A"
     return Neightbors(pattern,len(pattern))
 
+
+# This method find a k-mer Pattern that minimizes the hamming distance between a Pattern and a list of 
+# DNA strings over all k-mers Patterns. This k-mer pattern is known as a median string for DNA
+# Input: DNA is a list of strings and k is an int that represents the length of the sought pattern
+# Output: A string median that is length k that has the minimum distance between the pattern and all
+# DNA strings
 def MedianString(DNA,k):
     distance=math.inf
     patterns=AllStrings(k)
@@ -403,6 +409,10 @@ def MedianString(DNA,k):
     print(median)
     return median
 
+# This method generates a count matrix that counts the number of
+# instances a nucleotide appears at a given index in a series of strings
+# Input: Motifs is a list of DNA strings of equal length
+# Output: A dictionary count 
 def Count(Motifs):
     count = {} # initializing the count dictionary
     k = len(Motifs[0])
@@ -416,6 +426,11 @@ def Count(Motifs):
             symbol = Motifs[i][j].upper()
             count[symbol][j] += 1
     return count
+
+# This method generates a consensus string from a list of DNA
+# Sequences
+# Input: Motif is a list of strings of DNA
+# Output: A consensus string
 
 def Consensus(Motifs):
     k = len(Motifs[0])
@@ -431,6 +446,7 @@ def Consensus(Motifs):
         consensus += frequentSymbol
     return consensus
 
+# This is a helper method for a Greedy Search algorithm
 # Input:  A list of kmers Motifs
 # Output: the profile matrix of Motifs, as a dictionary of lists.
 def Profile(Motifs):
@@ -455,13 +471,24 @@ def Score(Motifs):
                 score += 1
     return score
 
+# This is a helper method for a Greedy Search algorithm
+# Input: text is a string that represents a patterns and Profile is a
+# list of lists that represents the probability of a given nucleotide
+# at a certain index
+# Output: The probability a text would appear in a string based on a
+# a probability profile
 def Pr(Text, Profile):
     prob = 1.0
     for i in range(len(Text)):
         prob = prob * Profile[Text[i].upper()][i]
     return prob
 
-# Then copy your ProfileMostProbablePattern(Text, k, Profile) and Pr(Text, Profile) functions here.
+# This method generates the most likely k length pattern that appears in 
+# a list of strings Text with a given probability matrix Profile.
+# This is a helper method for a Greedy Search algorithm
+# Input: Text is a list of strings, k is a positive int, and Profile
+# a list of lists. 
+# Output: returns a string of length k that is the most probable pattern
 def ProfileMostProbablePattern(Text, k, Profile):
     #Generate Dictionary of all the kmers in the text
     kmerDict = {}
@@ -478,7 +505,10 @@ def ProfileMostProbablePattern(Text, k, Profile):
         if kmerDict[keys] == m:
             return keys
 
-# Input:  A list of kmers Dna, and integers k and t (where t is the number of kmers in Dna)
+# This is a Greedy Search algorithm to search for hidden motifs found in a collection of strings
+# That represent DNA.
+# Input:  A list of kmers Dna, and integers k and t (where k is the length of the pattern
+# and t is the number of kmers in Dna)
 # Output: GreedyMotifSearch(Dna, k, t)
 def GreedyMotifSearch(Dna, k, t):
     BestMotifs = []
@@ -495,6 +525,8 @@ def GreedyMotifSearch(Dna, k, t):
                 BestMotifs = Motifs
     return BestMotifs
 
+# This method generates pseudoprofiles which is similar to a normal profile, but each
+# entry has 1 added to it to account for unlikely events
 # Input:  A list of kmers Motifs
 # Output: the profile matrix of Motifs with pseudocounts, as a dictionary of lists.
 def PseudoProfile(Motifs):
@@ -508,6 +540,11 @@ def PseudoProfile(Motifs):
         profile["T"][i] =(profile["T"][i]+1)/k
     return profile
 
+# This is a Greedy Search algorithm to search for hidden motifs found in a collection of strings
+# That represent DNA. It is improved by using pseudocounts.
+# Input:  A list of kmers Dna, and integers k and t (where k is the length of the pattern
+# and t is the number of kmers in Dna)
+# Output: GreedyMotifSearch(Dna, k, t)
 def ImprovedGreedyMotifSearch(Dna, k, t):
     BestMotifs = []
     for i in range(0, t):
@@ -524,6 +561,12 @@ def ImprovedGreedyMotifSearch(Dna, k, t):
     return BestMotifs
 
 ###### WEEK 4
+
+# This method generates motifs based on a profile matrix and a collection of
+# strings
+# This method is a helper method for a Monte Carlo random algorithm
+# Input: A list profile and a list of strings DNA
+# Output: A list motif that contains a 
 def Motifs(Profile,DNA):
     motif=[]
     k=len(Profile['A'])
@@ -531,6 +574,11 @@ def Motifs(Profile,DNA):
         motif.append(ProfileMostProbablePattern(DNA[i],k,Profile))
     return motif
 
+
+# This method returns the best motif in a collection of strings DNA
+# Input: A list of strings DNA, positive int k, and t is the number of DNA
+# strings in the list
+# Output: A best motif that approximates a solution
 
 import random
 def RandomizedMotifSearch(DNA, k ,t):
@@ -552,6 +600,11 @@ def RandomizedMotifSearch(DNA, k ,t):
 
     return bestMotif
 
+# This method runs RandomizedMotifSeach n times, and returns the
+# best scoring motif
+# Input: A list of strings DNA, positive int k, t is the number of DNA
+# strings in the list, and n is the number of iterations
+# Output: A best motif that is the best
 def MultiRandomSearch(DNA,k,t,n):
     bestScore=math.inf
     for i in range(n):
