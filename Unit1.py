@@ -616,6 +616,7 @@ def MultiRandomSearch(DNA,k,t,n):
             out=motif
     return out
 
+# This method returns a random pattern
 def ProfileRandomPattern(Text, k, Profile):
     #Generate Dictionary of all the kmers in the text
     kmerDict = {}
