@@ -1,13 +1,26 @@
+# This code was implemented for Genome Sequencing (Bioinformatics II) 
+
+
+####Helper Methods from Previous Unit
+
+# This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
         print(output[i])
 
+        #This method combines all elements in a list into a single string
+#and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
         out+= str(list[i])+" "
     print(out)
 
+# This method takes a DNA string that is deliminated by
+# a space and stores each DNA sequence as a separate element
+# in a list
+# Input: DNA string that has sequences separated by " "
+# Output: A list that contains each sequence
 def DNAStringtoList(DNA_string):
     curr_seq=''
     DNA_list=[]
@@ -20,6 +33,10 @@ def DNAStringtoList(DNA_string):
     DNA_list.append(curr_seq)
     return DNA_list
 
+#This method calculates the hamming distance between two strings
+#Input: text1 and text2 are two strings
+#Output: distance which is an int that counts the number of instances the two stings
+#do not match
 def Hamming(text1,text2):
     n=len(text1)
     l=len(text2)
@@ -40,6 +57,9 @@ def Hamming(text1,text2):
     #print(distance)
     return distance
 
+#This method finds the reverse complement of a DNA sequence
+#Input: DNA is a string containing only A,C,G,or T
+#Output: A string that is the reverse complement of DNA
 def RevComp(DNA):
     DNA=DNA.upper()
     cDNA=""
@@ -54,11 +74,15 @@ def RevComp(DNA):
             cDNA+="A"
     #print(cDNA[::-1])
     return cDNA[::-1]
-
+###########################################################
 
 import random
 ### Unit 2
 ### Week 1
+
+# Input: A string Text and a positive int k
+# Output: A list of all substrings of length k 
+# from the text
 def Composition(Text,k):
     comp=[]
     for i in range(len(Text)-k+1):
@@ -66,6 +90,11 @@ def Composition(Text,k):
     #comp.sort()
     return comp
 
+# This method stitches together a path list to complete
+# a path. This is used to stitch together a list of kmers
+# to reconstruct a genome
+# Input: A list of strings pathList
+# Output: The 
 def PathToGenome(pathList):
     genome=""
     #pathList=DNAStringtoList(path)
@@ -78,13 +107,27 @@ def PathToGenome(pathList):
             genome+=pathList[i][-1]
     return genome
 
+# This method returns the prefix defined as substring of a 
+# string consisting of the entire string except the last element
+# Input: A string pattern
+# Output: A prefix substring
 def Prefix(pattern):
     k=len(pattern)
     return pattern[0:k-1]
 
+# This method returns the suffic defined as substring of a 
+# string consisting of the entire string except the first element
+# Input: A string pattern
+# Output: A suffix substring
 def Suffix(pattern):
     return pattern[1::]
 
+# This method takes a string of DNA sequences
+# Input: A string of DNA sequences delimited by " "
+# Output: A dictionary graph with keys that are DNA 
+# sequences from patterns and the corresponding values are 
+# sequences that overlap with the key such that the
+# Suffix(key)==Prefix(pattern)
 def OverlapGraph(patterns):
     graph={}
     patternsList=DNAStringtoList(patterns)
@@ -109,6 +152,8 @@ def OverlapGraph(patterns):
         graph.pop(toRemove)
     return graph
 
+# This method takes a dictionary graph and prints each
+# key and its corresponding values one key per line
 def PrintGraph(graph):
     keys = list(graph.keys())
     keys.sort()
@@ -118,6 +163,12 @@ def PrintGraph(graph):
             out+=" "+str(graph[key][i])
         print(str(key)+":"+out)
 
+# This method generates combinations of either 
+# 0's or 1's with a mismatch d
+# Input: pattern is a string consisting of either 0's or 1's
+# and d is a positve int
+# Output: A list of all combinations of 0's and 1's with at most
+# d mismatches
 def BinaryNeightbors(pattern,d):
     #Base cases of the recursive alg
     if d == 0:
@@ -136,6 +187,10 @@ def BinaryNeightbors(pattern,d):
             Neightborhood.append(pattern[0]+text)
     return Neightborhood
 
+# This method takes a string text and breaks it into 
+# edges of length k and stores the corresponding nodes
+# Input: A positive int k and a string text
+# Output: A list of lists nodes and edges
 def PathGraph(k,text):
     edge=[]
     node=[]
@@ -144,6 +199,11 @@ def PathGraph(k,text):
         node.append(text[i:i+k-1])
     return [node,edge]
 
+# This method generates a DeBruijn Graph
+# from a complete genome
+# Input: A string text and a positive int k
+# Output: A dictionary with a DeBruijn graph
+# with fragments of length k
 def DeBruijnGraph(k,text):
     graph={}
     path=PathGraph(k,text)
@@ -160,6 +220,11 @@ def DeBruijnGraph(k,text):
 
     return graph
 
+# This method generates a DeBruijn Graph
+# from a list of strings pattern
+# Input: A list of strings patterns and a positive int k
+# Output: A dictionary with a DeBruijn graph
+# with fragments of length k
 def DeBruijn(patterns):
     #patternList=DNAStringtoList(patterns)
     graph={}
@@ -176,6 +241,9 @@ def DeBruijn(patterns):
     return graph
 
 ##Week 2
+
+# This is a helper method to read text files
+# and store the output as a dictionary
 def dictFromText(filename, dest = 0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -192,8 +260,12 @@ def dictFromText(filename, dest = 0):
             dict[main_node].append(adjNode.strip())
     return dict
 
-#print(dictFromText('adjList.txt'))
-
+# This method solves a EulerianCycle in a given graph
+# Input: A dictionary graph and an optional argument
+# for a set starting node. Default is to choose a random
+# starting node
+# Output: A list cycle that contains the order of nodes
+# that complete a EulerianCycle from the given graph
 def EulerianCycle(graph,curr_node=0):
     stack=[]
     cycle=[]
@@ -225,6 +297,11 @@ def EulerianCycle(graph,curr_node=0):
             curr_node=temp_node[:]
     return cycle[::-1]
 
+
+# This method solves a Eulerian Path in a given graph
+# Input: A dictionary graph 
+# Output: A list path that contains the order of nodes
+# that complete a Eulerian Path
 import copy
 def EulerianPath(graph):
     path=[]
@@ -272,16 +349,27 @@ def EulerianPath(graph):
     path.pop(-1)
     return path
 
-def StringReconstruction(k,patterns):
+# This method reconstructs a genome from a collection 
+# of DNA strings
+# Input: A list of strings patterns of equal length
+# Output: A string that represents a reconstructed genome
+def StringReconstruction(patterns):
+    # Generates a DeBruijn graph from the given patterns
     dB=DeBruijn(patterns)
-    #PrintGraph(dB)
+    # PrintGraph(dB)
     print("de Bruijn graph is done")
     print('Searching for Path...')
+    # Solving a Eulerian Path through the graph 
     path=EulerianPath(dB)
     print('Path Done')
+    # Concatenates the path to form a reconstructed genome
     genome=PathToGenome(path)
     return genome
 
+# This method generates a universal binary circular string
+# consisting of fragments of length k
+# Input: A positive int k
+# Output: A string out that contains the sequence 
 def UniversalCircularString(k):
     first_kmer=""
     for i in range(k):
@@ -296,22 +384,26 @@ def UniversalCircularString(k):
         out+=genome[i]
     return out
 
-#print(UniversalCircularString(9))
-
+# This method breaks a genome into paired reads
+# Input: A string genome, a positive int k, and 
+# a positive int d that is the distance between
+# the read pairs
+# Output: a list of paired reads from the genome
 def PairedComposition(genome,k,d):
-    out=[]
+    pairedRead=[]
     for i in range(len(genome)-2*k-d+1):
         pattern1=genome[i:i+k]
         pattern2=genome[i+k+d:i+d+k+k]
         out.append([pattern1,pattern2])
-    out.sort()
+    pairedRead.sort()
     outString=""
-    for i in range(len(out)):
-        outString+="("+str(out[i][0])+"|"+str(out[i][1])+") "
+    for i in range(len(pairedRead)):
+        outString+="("+str(pairedRead[i][0])+"|"+str(pairedRead[i][1])+") "
     print(outString)
-    return out
-#PairedComposition('TAATGCCATGGGATGTT',3,2)
+    return pairedRead
 
+# This method stores paired reads from a text file and
+# stores them in a list
 def PairedReadsFromText(filename, dest = 0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -327,6 +419,10 @@ def PairedReadsFromText(filename, dest = 0):
             out.append([pattern1.strip(),pattern2.strip()])
     return out
 
+# This method returns the prefix from a paried read
+# Input: A list with two elements that are a paired read
+# Output: A string with the prefix of each pattern from read
+# separated by a "|"
 def PairedPrefix(read):
     temp_pattern1=read[0]
     temp_pattern2=read[1]
@@ -338,14 +434,20 @@ def PairedPrefix(read):
         pattern2+=temp_pattern2[i]
     return str(pattern1)+"|"+str(pattern2)
 
+# This method returns the suffix from a paried read
+# Input: A list with two elements that are a paired read
+# Output: A string with the suffix of each pattern from read
+# separated by a "|"
 def PairedSuffix(read):
     pattern1=read[0]
     pattern2=read[1]
 
     return str(pattern1[1::])+"|"+str(pattern2[1::])
 
-#print(PairedSuffix(['GAC','TCA']))
-
+# This method generates a DeBruijn graph from paired reads
+# Input: A list of strings patterns of equal length
+# Output: A dictionary graph that contains a DeBruijn graph
+# from the paired reads
 def DeBruijnPairedReads(readsList):
     #patternList=DNAStringtoList(patterns)
     graph={}
@@ -364,6 +466,12 @@ def DeBruijnPairedReads(readsList):
             graph[pre].sort()
     return graph
 
+# This method returns a genome from a collection of paired reads
+# Input: A list of an ordered set of paired reads GappedPatterns, a 
+# positive int k that is the length of a read, and d a positive int 
+# that separates the paired reads
+# Output: A string that represents the reconstructed string from the paired 
+# reads. Returns none if no string exists
 def StringSpelledByGappedPatterns(GappedPatterns,k,d):
     firstPatterns=[]
     secondPatterns=[]
@@ -383,6 +491,12 @@ def StringSpelledByGappedPatterns(GappedPatterns,k,d):
             return None
     return prefixString+suffixString[-1*(k+d):]
 
+# This method returns a genome from a collection of paired reads
+# Input: A list of a set of paired reads patterns, a positive int 
+# k that is the length of a read, and d a positive int that 
+# separates the paired reads
+# Output: A string that represents the reconstructed string from the paired 
+# reads. Returns none if no string exists
 def PairedStringReconstruction(k,d,patterns):
     dB=DeBruijnPairedReads(patterns)
     #print(dB)
@@ -394,8 +508,13 @@ def PairedStringReconstruction(k,d,patterns):
     genome=StringSpelledByGappedPatterns(path,k,d)
     return genome
 
+# This method takes a dictionary graph and returns a maximal
+# non-branching path from the graph
+# Input: A dictionary graph
+# Output: A list Paths that contain all non-branching paths
 def MaximalNonBranchingPaths(graph):
     Paths=[]
+    
     # Get all possible nodes in the graph
     allNodes = {}
     edge_List = []
@@ -423,18 +542,11 @@ def MaximalNonBranchingPaths(graph):
             countDict[node]=[in_count,0]
 
     for node in countDict:
-        #print('Current node is node: '+str(node))
         in_v= countDict[node][0]
-        #print('in degrees is: '+str(in_v))
         out_v = countDict[node][1]
-        #print('out degrees is: ' + str(out_v))
         if in_v!=1 or out_v!=1:
-            #print('Not a 1-1 node')
             if out_v>0:
-                #print("Out degree is greater than 0")
                 for edge in graph[node]:
-                    #print('next node is: '+str(edge))
-                    #print(countDict[edge])
                     edge_in=countDict[str(edge)][0]
                     edge_out=countDict[str(edge)][1]
                     NonBranch=[node]
@@ -451,19 +563,14 @@ def MaximalNonBranchingPaths(graph):
     cycleList=[]
     for node in graph:
         cycle=[node]
-        #print('Node is: '+str(node))
         curr_node=str(graph[node][0])
-        #print('Next Node is: ' + str(curr_node))
         while str(curr_node)!=str(node):
             cycleKeys = dict.fromkeys(cycle)
-            #print("Nodes in current cycle: ")
-            #print(cycleKeys)
+
             if curr_node in cycleKeys:
-                #print('Repeat Node')
                 break
             cycle.append(curr_node)
             if curr_node not in graph:
-                #print('Node not in graph')
                 break
             elif len(graph[curr_node])>0:
                 curr_node=str(graph[curr_node][0])
@@ -473,46 +580,31 @@ def MaximalNonBranchingPaths(graph):
             cycle.append(curr_node)
             cycleList.append(cycle)
 
-    # #Remove duplicate cycles
-    #PrintList(cycleList)
+    # Remove duplicate cycles
+
     to_remove=[]
     for i in range(len(cycleList)-1):
         keys=dict.fromkeys(cycleList[i])
         keys=list(keys.keys())
         keys.sort()
-        #print()
-        #print('Keys: ' + str(i))
-        #PrintListFlat(keys)
+
         for j in range(i+1,len(cycleList)):
             other_keys=dict.fromkeys(cycleList[j])
             other_keys=list(other_keys.keys())
             other_keys.sort()
-            #print('Other Keys '+str(j))
-            #PrintListFlat(other_keys)
             remove= True
             if len(keys)!=len(other_keys):
-                #print('not the same length')
                 remove=False
             else:
                 for k in range(len(keys)):
                     if other_keys[k]!=keys[k]:
-                        #print('mismatch here: '+str(k))
-                        #print('keys: ' + str(keys[k]))
-                        #print('other keys: ' + str(other_keys[k]))
                         remove=False
             if remove:
                 to_remove.append(i)
                 to_remove=dict.fromkeys(to_remove)
                 to_remove=list(to_remove.keys())
-                #print('Will remove: ')
-                #PrintListFlat(to_remove)
-    # print()
-    # PrintList(cycleList)
-    # print()
-    # PrintListFlat(to_remove)
+
     to_remove=to_remove[::-1]
-    # print(to_remove)
-    # print()
 
     for key in to_remove:
         cycleList.pop(key)
@@ -551,13 +643,12 @@ def MaximalNonBranchingPaths(graph):
     #    PrintListFlat(path)
     return Paths
 
+# This method generates contigs from a collection of DNA strings
+# Input: A list of strings patterns
+# Outputs: A list of strings of the reconstructed contigs
 def Contig(patterns):
     dB=DeBruijn(patterns)
-    #PrintGraph(dB)
-    #print()
     maxPaths=MaximalNonBranchingPaths(dB)
-    #PrintList(maxPaths)
-    #print()
     contigs=[]
     for path in maxPaths:
         contigs.append(PathToGenome(path))
@@ -583,6 +674,9 @@ def Unit2Week2InputReader(filename,problem):
 
 #Week 3
 
+# This method translates a string RNA into an amino acid
+# Input: A string RNA
+# Output: A string seq that is the peptide sequence
 def Translation(RNA):
     codon={
         "UUU":"F",
@@ -608,16 +702,47 @@ def Translation(RNA):
         'CCG': 'P',
         'ACG': 'T',
         "GCG": 'A',
-        'UAU': 'Y',      'CAU': 'H' ,     'AAU': 'N',      'GAU': 'D',
-        'UAC': 'Y',      'CAC': 'H',      'AAC': 'N',      'GAC': 'D',
-        'UAA': 'Stop'   ,'CAA':'Q'     ,"AAA": 'K',      "GAA": 'E',
-        'UAG':'Stop',   'CAG': 'Q',      'AAG': 'K',      'GAG': 'E',
-        'UGU': 'C'    ,  "CGU": 'R'    ,  "AGU": 'S',      'GGU': 'G',
-        'UGC': 'C',      "CGC": 'R',      "AGC": 'S',      'GGC': 'G',
-        'UGA':'Stop' ,  'CGA':'R',      'AGA':'R',      "GGA" :'G',
-        'UGG': 'W' ,     'CGG': 'R',      'AGG': 'R',      'GGG': 'G',
-        'CUU': 'L',      'AUU': 'I' ,     'GUU': 'V', "CUC": 'L', 'AUC': 'I',      'GUC': 'V',
-        'CUA': 'L',      'AUA': 'I',      'GUA': 'V'
+        'UAU': 'Y',      
+        'CAU': 'H',     
+        'AAU': 'N',      
+        'GAU': 'D',
+        'UAC': 'Y',      
+        'CAC': 'H',      
+        'AAC': 'N',      
+        'GAC': 'D',
+        'UAA': 'Stop',
+        'CAA':'Q',
+        "AAA": 'K',      
+        "GAA": 'E',
+        'UAG':'Stop',   
+        'CAG': 'Q',      
+        'AAG': 'K',      
+        'GAG': 'E',
+        'UGU': 'C',  
+        "CGU": 'R', 
+        "AGU": 'S',      
+        'GGU': 'G',
+        'UGC': 'C',      
+        "CGC": 'R',      
+        "AGC": 'S',      
+        'GGC': 'G',
+        'UGA':'Stop',  
+        'CGA':'R',      
+        'AGA':'R',      
+        "GGA" :'G',
+        'UGG': 'W' ,     
+        'CGG': 'R',      
+        'AGG': 'R',      
+        'GGG': 'G',
+        'CUU': 'L',      
+        'AUU': 'I',     
+        'GUU': 'V', 
+        "CUC": 'L', 
+        'AUC': 'I',      
+        'GUC': 'V',
+        'CUA': 'L',      
+        'AUA': 'I',      
+        'GUA': 'V'
     }
     seq=''
     for i in range(int(len(RNA)/3)):
@@ -630,6 +755,9 @@ def Translation(RNA):
     #print(seq)
     return seq
 
+# This method transcribes DNA into an RNA string
+# Input: A string of DNA
+# Output: A string of RNA
 def DNA2RNA(dna):
     #dna=dna.upper()
     rna=''
@@ -640,6 +768,11 @@ def DNA2RNA(dna):
             rna+=dna[i]
     return rna
 
+# This method determines if a peptide is found in a DNA 
+# string
+# Input: A string of DNA text and a string peptide
+# Output: A list of the locations indicating where the
+# peptide can be found in the string Text
 def PeptideEncoding(Text,peptide):
     k=len(peptide)*3
     rna=DNA2RNA(Text)
@@ -656,9 +789,10 @@ def PeptideEncoding(Text,peptide):
             peptide_location.append(dna_seq)
         if rev_curr_peptide==peptide:
             peptide_location.append(dna_seq)
-
     return peptide_location
 
+# This method reads a genome from a text file
+# and returns a string
 def GenomeFromText(filename,dest=0):
     genome=""
     if dest==0:
@@ -672,6 +806,10 @@ def GenomeFromText(filename,dest=0):
         genome+=line.strip()
     return genome
 
+# This method calculates the approximate mass
+# of a peptide
+# Input: A string peptide
+# Output: An int mass
 def PeptideMass(peptide):
     mass=0
     massTable={
@@ -702,6 +840,12 @@ def PeptideMass(peptide):
     for i in range(len(peptide)):
         mass+=massTable[peptide[i]]
     return mass
+
+# This method takes an int mass and returns
+# the peptide of that mass. For masses 113 and 128
+# only I and K are given
+# Input: An int mass
+# Output: A string corresponding to the amino acid with the given mass
 
 def MassToPeptide(mass):
     if mass == 57:
@@ -743,7 +887,12 @@ def MassToPeptide(mass):
     else:
         return ""
 
-
+# This method takes a string peptide and returns
+# a string comprising the masses of each amino acid
+# in the peptide separated by "-"
+# Input: A string peptide
+# Output: A string of amino acid masses separated by
+# "-"
 def PeptideToMass(peptide):
     mass=""
     massTable={
@@ -775,8 +924,9 @@ def PeptideToMass(peptide):
         mass+=str(massTable[peptide[i]])+"-"
     return mass[:-1]
 
-#print(PeptideMass('LQN'))
-
+# This method generates the linear mass spectrum of a peptide
+# Input: A string peptide
+# Output: A list spectrum that contains the mass spectrum of the peptide
 def LinearSpectrum(Peptide):
     PrefixMass=[0]
     massTable = {
@@ -801,7 +951,6 @@ def LinearSpectrum(Peptide):
         'Y': 163,
         'W': 186
     }
-
     for i in range(1,len(Peptide)+1):
         for key in massTable:
             if key == Peptide[i-1]:
@@ -813,48 +962,47 @@ def LinearSpectrum(Peptide):
     spectrum.sort()
     return spectrum
 
+# This method generates the cyclic mass spectrum of a peptide
+# Input: A string peptide
+# Output: A list spectrum that contains the mass spectrum of the peptide
 def CyclicSpectrum(Peptide):
     spectrum=LinearSpectrum(Peptide[:-1])
     TotalMass=PeptideMass(Peptide)
     diff=[]
     for mass in spectrum:
         diff.append(TotalMass-mass)
-
     for value in diff:
         spectrum.append(value)
     spectrum.sort()
     return spectrum
 
+# This method calculates the number of subpeptides
+# that can be generated from a peptide of length n
+# Input: An int n
+# Output: A int sum
 def Subpeptides(n):
     sum=0
     for i in range(n):
         sum+=n-i
     return sum+1
 
+# This method expands a set of peptides by every possible
+# amino acid
+# Input: A set of strings that represent peptides
+# Outout: A set of strings containing every original string
+# expanded by a single amino acid
 def PeptideExpander(peptideSet):
     expanded=set()
     for peptide in peptideSet:
-        for ammino_acid in ['G',
-        'A',
-        'S',
-        'P',
-        'V',
-        'T',
-        'C',
-        'I',
-        'N',
-        'D',
-        'K',
-        'E',
-        'M',
-        'H',
-        'F',
-        'R',
-        'Y',
-        'W']:
+        for ammino_acid in ['G', 'A','S','P','V','T','C','I','N','D','K','E','M','H','F','R','Y','W']:
             expanded.add(str(peptide)+str(ammino_acid))
     return expanded
 
+# This method expands a set of peptides by the amino acids found
+# in a given spectrum
+# Input: A set of strings that represent peptides
+# Outout: A set of strings containing every original string
+# expanded by a single amino acid
 def LimitedPeptideExpander(peptideSet,convoluted_spec):
     limitedAminoAcids=[]
     for mass in convoluted_spec:
@@ -867,6 +1015,11 @@ def LimitedPeptideExpander(peptideSet,convoluted_spec):
             expanded.add(str(peptide)+str(ammino_acid))
     return expanded
 
+
+# This method is a branch and bound algorithm
+# Inout: A list that represents the mass spectrum of a peptide
+# Output: A set of strings containing the masses of a linear 
+# peptide sequence that match the spectrum
 import copy
 def CyclopeptideSequencing(Spectrum):
     CandidatePeptide={''}
@@ -900,6 +1053,8 @@ def CyclopeptideSequencing(Spectrum):
     FinalPeptide=sorted(FinalPeptide)
     return FinalPeptide[::-1]
 
+# This is a helper method to read a spectrum
+# from a text file
 def SpecFromText(filename,dest=0):
     spec=[]
     if dest==0:
@@ -914,6 +1069,10 @@ def SpecFromText(filename,dest=0):
             spec.append(int(entry.strip()))
     return spec
 
+# Thie method scores a given cyclic peptide and a mass spectrum
+# the higher the score, the more the two match
+# Input: A string pep and a list of int masses spec
+# Output: A int count that represents the score
 def PeptideScore(pep,spec):
     count=0
     pep_spec=CyclicSpectrum(pep)
@@ -938,6 +1097,10 @@ def PeptideScore(pep,spec):
             count+=min(pepDict[keys],specDict[keys])
     return count
 
+# Thie method scores a given linear peptide and a mass spectrum
+# the higher the score, the more the two match
+# Input: A string pep and a list of int masses spec
+# Output: A int count that represents the score
 def LinearPeptideScore(pep,spec):
     count=0
     pep_spec=LinearSpectrum(pep)
@@ -962,6 +1125,12 @@ def LinearPeptideScore(pep,spec):
             count+=min(pepDict[keys],specDict[keys])
     return count
 
+# This method trims a list so that only the top n peptides
+# are kept
+# Input: A set of strings Leaderboard containing peptides, a
+# list Spectrum that contains the masses of peptide fragments,
+# and a positive int n that represents the top ranking
+# Output A list trim_Leaderboard
 import pandas as pd
 def Trim(Leaderboard,Spectrum,n):
     print("Making Dataframe...")
@@ -982,6 +1151,10 @@ def Trim(Leaderboard,Spectrum,n):
             trim_Leaderboard.append(str(df.loc[index,'peptide']))
     return trim_Leaderboard
 
+# This method sequences a cyclopeptide with a noisy spectrum
+# Input: A list of int masses Spectrum and a positive int N
+# Output: A string with the best scoring peptide with the given 
+# mass spectrum
 def LeaderboardCyclopeptideSequencing(Spectrum,N):
     LeaderBoard={''}
     LeaderPeptide=""
@@ -1008,6 +1181,12 @@ def LeaderboardCyclopeptideSequencing(Spectrum,N):
     print(PeptideToMass(LeaderPeptide[::-1]))
     return LeaderPeptide[::-1]
 
+# This method generates a convoluted spectrum
+# from a given mass spectrum. Convolution of a spectrum is done by taking 
+# all positive differences of masses in the spectrum and storing them
+# Input: A list of int masses spectrum
+# Output: The list of elements in the convolution of spectrum 
+# If an element has multiplicity k, it should appear exactly k times
 def SpectrumConvolution(spectrum):
     convolution={}
     for i in range(1,len(spectrum)):
@@ -1025,10 +1204,18 @@ def SpectrumConvolution(spectrum):
     # print(out)
     return convolution
 
+# This method sequences a cyclopeptide using convolution
+# This accounts for missing masses in a noisy experimental 
+# spectrum
+# Input: A positive  int m that selects the top m masses in a
+# convoluted spectrum, a positive int n that selects the top n
+# scoring peptides, and a list of ints Spectrum that is the mass
+# spectrum of a protein
+# Output: A string LeaderPeptide that is the best scoring peptide
+# of a given spectrum
 def ConvolutionCyclopeptideSequencing(M,N,Spectrum):
     convolution = SpectrumConvolution(Spectrum)
     #Eliminating infrequent Convolutions
-
     trim_convolutions=[]
     print("Making Dataframe...")
     d = {'mass': [], 'freq': []}
@@ -1075,8 +1262,3 @@ def ConvolutionCyclopeptideSequencing(M,N,Spectrum):
     print(LeaderPeptide[::-1])
     print(PeptideToMass(LeaderPeptide[::-1]))
     return LeaderPeptide
-
-spec=SpecFromText('spec.txt')
-
-out=SpectrumConvolution(spec)
-print(out)
