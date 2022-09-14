@@ -334,7 +334,13 @@ def MaxDistance(data,centers):
 def Pr(n,Data,Theta):
     return Theta**(n*Data)*(1-Theta)**(n*(1-Data))
 
-
+# This methodprogressively generates n different partitions of the underlying data into clusters, 
+# all represented by a tree in which each node is labeled by a cluster of genes. 
+# In general, the i-th partition merges the two closest clusters from the (i - 1)-th partition and 
+# has n - i + 1 clusters.
+# Input: A list of lists D representing a distance matrix and a positive int n
+# Output: The result of applying HierarchicalClustering to this distance matrix (using Davg), 
+# with each newly created cluster listed on each line.
 import math
 def HierarchicalClustering(D,n):
     # MatrixPrint(D)
