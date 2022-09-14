@@ -8,8 +8,8 @@ def PrintList(output):
     for i in range(len(output)):
         print(output[i])
 
-        #This method combines all elements in a list into a single string
-#and prints the string on a single line
+# This method combines all elements in a list into a single string
+# and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
