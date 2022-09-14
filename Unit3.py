@@ -151,10 +151,10 @@ def ManhattanTourist(n, m, Down, Right):
     #MatrixPrint(s)
     return s[-1][-1]
 
-# LCSBacktrack produces a matrix
-# Input: Two strings v and w
-# Output: A list of lists backTrack that store pointers that reconstruct
+# LCSBacktrack produces a matrix that store pointers that reconstruct
 # the longest common string between strings v and w
+# Input: Two strings v and w
+# Output: A list of lists backTrack matrix
 def LCSBacktrack(v,w):
     s = [[0] * (len(w)+1) for i in range(len(v)+1)]
     backTrack = [[0] * (len(w)+1) for i in range(len(v)+1)]
@@ -182,6 +182,10 @@ def LCSBacktrack(v,w):
 import sys
 sys.setrecursionlimit(1500)
 
+# This method reconstructs the longest common string
+# Input: A list backtrack that has pointers, string v,
+# and two ints i and j
+# Output: A string that is the longest common string
 def OutputLCS(backtrack,v,i,j):
     if i==0 or j==0:
         return ""
@@ -193,6 +197,13 @@ def OutputLCS(backtrack,v,i,j):
     else:
         return OutputLCS(backtrack,v,i-1,j-1) + v[i-1]
 
+# This method returns the longest path in a directed
+# acyclic graph
+# Input: Two ints startNode and endNode and a string
+# filename
+# Output: An int that is the length of the longest path
+# and a list that shows the order of nodes from the start
+# node to the end node
 import copy
 def LongestPathInDAG(startNode,endNode,filename):
     travelList = ModDAGfromFile(filename)
@@ -244,18 +255,6 @@ def LongestPathInDAG(startNode,endNode,filename):
                     s[currNode] = s[previousNode] + weight
                     b[currNode] = previousNode
 
-    # #Troubleshooting
-    # keyss=list(copy_original_b.keys())
-    # keyss.sort()
-    # for key in keyss:
-    #     print(str(key)+": "+str(copy_original_b[key]))
-    #
-    # print()
-    # print(travelDict)
-    # print()
-    # print(s)
-    # print(b)
-    # print()
     print(s[endNode])
     path=[]
     currNode=endNode
@@ -264,6 +263,7 @@ def LongestPathInDAG(startNode,endNode,filename):
         currNode=b[currNode]
     path.append(startNode)
     PrintListFlat(path[::-1])
+    return s[endNode], path[::-1]
 
 
 BLOSUM62={'A': {'A': 4, 'C': 0, 'E': -1, 'D': -2, 'G': 0, 'F': -2, 'I': -1, 'H': -2, 'K': -1, 'M': -1, 'L': -1, 'N': -2,
@@ -307,13 +307,19 @@ BLOSUM62={'A': {'A': 4, 'C': 0, 'E': -1, 'D': -2, 'G': 0, 'F': -2, 'I': -1, 'H':
           'Y': {'A': -2, 'C': -2, 'E': -2, 'D': -3, 'G': -3, 'F': 3, 'I': -1, 'H': 2, 'K': -2, 'M': -1, 'L': -1,
                 'N': -2, 'Q': -1, 'P': -3, 'S': -2, 'R': -2, 'T': -2, 'W': 2, 'V': -1, 'Y': 7}}
 
+######### The following code is still work in progress
 
+# This method reconstructs the alignment of a string to another
+# string
+# Input: A list backtrack that has pointers, string v,
+# and two ints i and j
+# Output: A string that is the longest common string
 def OutputLCS_Global(backtrack,v,i,j):
     if i == 0 and j == 0:
         return ""
     if i == 0 or j == 0:
         return "-"
-
+    
     if len(v)==len(backtrack)-1:
         if backtrack[i][j]=="V":
             return OutputLCS_Global(backtrack,v,i-1,j) + v[i-1]
@@ -329,7 +335,12 @@ def OutputLCS_Global(backtrack,v,i,j):
         else:
             return OutputLCS_Global(backtrack,v,i-1,j-1) + v[i-1]
 
-
+# This method finds a highest-scoring alignment of two strings as defined 
+# by a scoring parameters
+# Input: Three ints match reward, a mismatch penalty, an indel penalty,
+# and two nucleotide strings v and w.
+# Output: The maximum alignment score of these strings followed by an alignment 
+# achieving this maximum score
 def GlobalAlignmentProblem(match,mismatchPenalty,inDelPenalty,v,w):
     s = [[0] * (len(w)+1) for i in range(len(v)+1)]
     backTrack = [[0] * (len(w)+1) for i in range(len(v)+1)]
