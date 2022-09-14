@@ -234,6 +234,19 @@ def CenterOfGravity(points):
         grav.append(sum)
     return grav
 
+# An implementation of the Lloyd algorithm, a clustering heuristics for the k-Means Clustering Problem. 
+#It first chooses k arbitrary distinct points Centers from Data as centers and then iteratively performs 
+# the following two steps: Centers to Clusters and Clusters to Centers
+# Centers to Clusters: After centers have been selected, assign each data point to the cluster corresponding 
+# to its nearest center; ties are broken arbitrarily.
+# Clusters to Centers: After data points have been assigned to clusters, assign each cluster’s center of 
+# gravity to be the cluster’s new center.
+
+# Input: Integers k and m followed by a set of points Data in m-dimensional space.
+# Output: A set Centers consisting of k points (centers) resulting from applying 
+# the Lloyd algorithm to Data and Centers, where the first k points from Data are 
+# selected as the first k centers.
+
 def LLoyd(k,m,points):
     #Choose initial centers
     centers=copy.deepcopy(points[0:k])
@@ -263,6 +276,11 @@ def LLoyd(k,m,points):
         print(out)
     return centers
 
+# This is a method to help initialize a k means clustering by picking k centers one 
+# at a time, but instead of choosing the point farthest from those picked so far, it 
+# chooses each point at random in such a way that distant points are more likely to be chosen than nearby points
+# Input: A list data with coordinates and a positive int k
+# Output: A list with coordinates for k centers
 import random
 def kMeansInit(Data,k):
     centers=[]
@@ -280,7 +298,10 @@ def kMeansInit(Data,k):
         centers.append(random.choices(Data,dist))
     return centers
 
-#print(kMeansInit(points,k))
+# This method calculates the farthest distance between a 
+# datapoint and all avaliable centers
+# Input: A list data and centers
+# Output: A float maxDistance
 
 def MaxDistance(data,centers):
     maxDistance=0
@@ -307,7 +328,9 @@ def MaxDistance(data,centers):
             maxDistance=tempMax
     return maxDistance
 
-
+# This returns the conditional probability of generating the outcome Data given a coin with bias θ
+# Input: An int n, float Data, and a float Theta
+# Output: A float conditional probability
 def Pr(n,Data,Theta):
     return Theta**(n*Data)*(1-Theta)**(n*(1-Data))
 
@@ -336,7 +359,6 @@ def HierarchicalClustering(D,n):
                     #print(node)
         # MatrixPrint(D)
         # print()
-
         # T.append([node[3],node[2]])
         Clusters.pop(node[1])
         # print(Clusters)
