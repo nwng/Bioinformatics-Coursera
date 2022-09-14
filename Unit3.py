@@ -1,3 +1,10 @@
+# The following code was implemented to solve problems from 
+# Comparing Genes, Proteins, and Genomes (Bioinformatics III)
+
+
+###### The following are helper methods from previous chapters
+# This method reads a matrix from a text file and
+# saves it as a list of lists.
 def MatrixFromText(filename, dest=0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -14,6 +21,7 @@ def MatrixFromText(filename, dest=0):
         matrix.append(toadd)
     return matrix
 
+# This method helps print a list of lists
 def MatrixPrint(Matrix):
     for i in range(len(Matrix)):
         out=''
@@ -21,16 +29,24 @@ def MatrixPrint(Matrix):
             out+=str(Matrix[i][j]) + " "
         print(out)
 
+# This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
         print(output[i])
-
+        
+# This method combines all elements in a list into a single string
+# and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
         out+= str(list[i])+" "
     print(out)
 
+# This method takes a DNA string that is deliminated by
+# a space and stores each DNA sequence as a separate element
+# in a list
+# Input: DNA string that has sequences separated by " "
+# Output: A list that contains each sequence
 def DNAStringtoList(DNA_string):
     curr_seq=''
     DNA_list=[]
@@ -42,8 +58,10 @@ def DNAStringtoList(DNA_string):
             curr_seq=''
     DNA_list.append(curr_seq)
     return DNA_list
+####
 
-
+# This method reads a directed acyclic graph from a text file
+# and saves it as a dictionary
 def DAGfromFile(filename,top=0,dest=0):
     if top==1:
         topList=[]
@@ -74,6 +92,8 @@ def DAGfromFile(filename,top=0,dest=0):
         return map,topList
     return map
 
+# This method reads a directed acyclic graph from a text file
+# and saves it as a list of lists
 def ModDAGfromFile(filename,dest=0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -89,9 +109,11 @@ def ModDAGfromFile(filename,dest=0):
         weight=int(rawLine[2].strip())
         map.append((startNode,endNode,weight))
     return map
-#print(ModDAGfromFile('map.txt'))
 
-
+# This method is a dynamic programming approach to calculate the
+# minimum number of coins needed for an int amount of money
+# Input: A positive int money and a list of int coins
+# Ouput: A int of the minimum number of coins
 import math
 def DPChange(money,coins):
     minNum=[0]
@@ -107,6 +129,11 @@ def DPChange(money,coins):
         #print(minNum)
     return minNum[money]
 
+# This method finds a maximum-weight path connecting the source to the sink
+# in an n x m grid
+# Input: Integers n and m, followed by an n × (m + 1) matrix Down and an (n + 1) × m matrix Right. 
+# Output: The length of a longest path from source (0, 0) to sink (n, m) in the rectangular grid 
+# whose edges are defined by the matrices Down and Right.
 def ManhattanTourist(n, m, Down, Right):
     s=[[0]*(m+1) for i in range(n+1)]
     # print(s)
@@ -124,10 +151,9 @@ def ManhattanTourist(n, m, Down, Right):
     #MatrixPrint(s)
     return s[-1][-1]
 
-# down=MatrixFromText('down.txt')
-# right=MatrixFromText('right.txt')
-# print(ManhattanTourist(17,11,down,right))
-
+# LCSBacktrack solves
+# Input: Two strings v and w
+# Output: A list of lists
 def LCSBacktrack(v,w):
     s = [[0] * (len(w)+1) for i in range(len(v)+1)]
     backTrack = [[0] * (len(w)+1) for i in range(len(v)+1)]
@@ -150,7 +176,6 @@ def LCSBacktrack(v,w):
     #MatrixPrint(s)
     #print()
     #MatrixPrint(backTrack)
-
     return backTrack
 
 import sys
@@ -166,229 +191,7 @@ def OutputLCS(backtrack,v,i,j):
         return OutputLCS(backtrack,v,i,j-1)
     else:
         return OutputLCS(backtrack,v,i-1,j-1) + v[i-1]
-# v=''
-# w=''
-#
-# backtrack=LCSBacktrack(v,w)
-# print()
-# print(OutputLCS(backtrack,v,len(v),len(w)))
 
-
-# def LongestPathinDAGv1(startNode,endNode,filename,top=0):
-#     if top==1:
-#         map,topList=DAGfromFile(filename,1)
-#     else:
-#         map=DAGfromFile(filename)
-#
-#     s={}
-#     b={}
-#     #print(topList)
-#     topList.append(endNode)
-#     for i in range(len(topList)):
-#         s[topList[i]]=-1*math.inf
-#         b[topList[i]]=-1
-#
-#     s[startNode]=0
-#     b[startNode]=startNode
-#
-#     skipList=[-1]
-#     for i in range(1,len(topList)):
-#         currnode=topList[i]
-#         max=-1*math.inf
-#         for j in range(i):
-#             prevNode=topList[j]
-#             if prevNode not in skipList:
-#                 if currnode in map[prevNode]:
-#                     weight=map[prevNode][currnode]
-#                     if max < s[prevNode]+weight:
-#                         max=s[prevNode]+weight
-#                         backNode=prevNode
-#         if max==-1*math.inf:
-#             skipList.append(currnode)
-#         else:
-#             s[currnode]=max
-#             b[currnode]=backNode
-#
-#     #Get Path
-#     currnode=endNode
-#     path=[]
-#
-#     while currnode!=startNode:
-#         path.append(currnode)
-#         currnode=b[currnode]
-#     path.append(startNode)
-#
-#     PrintListFlat(path[::-1])
-#     return s[endNode],path[::-1]
-# #LongestPathinDAGv1(0,4,'map.txt',1)
-#
-#
-# def ZeroInDegree(map):
-#     allNodes={}
-#     for entry in map:
-#         sourceNode=entry[0]
-#         sinkNode=entry[1]
-#         allNodes[sourceNode]=0
-#         allNodes[sinkNode]=0
-#     allNodes=list(allNodes.keys())
-#     allNodes.sort()
-#     inDegree={}
-#     outDegree={}
-#     for node in allNodes:
-#         inDegree[node]=0
-#         outDegree[node]=0
-#         for entry in map:
-#             if entry[1]==node:
-#                 inDegree[node]+=1
-#             if entry[0]==node:
-#                 outDegree[node]+=1
-#
-#     possibleSource=[]
-#     possibleSink=[]
-#     for key in inDegree:
-#         if inDegree[key]==0:
-#             possibleSource.append(key)
-#         if outDegree[key]==0:
-#             possibleSink.append((key))
-#     return possibleSource, possibleSink
-#
-#
-# def LongestPathinDAGv2(startNode, endNode, filename):
-#
-#     map = ModDAGfromFile(filename)
-#     map.sort()
-#     PrintList(map)
-#     print()
-#     inD,outD=ZeroInDegree(map)
-#     inD.remove(startNode)
-#     outD.remove(endNode)
-#     #print(NoInDegree)
-#
-#     s = {}
-#     b = {}
-#
-#     for i in range(len(map)):
-#         sourceNode=map[i][0]
-#         sinkNode = map[i][1]
-#         s[sourceNode] = 0
-#         b[sourceNode] = -1
-#         s[sinkNode] = 0
-#         b[sinkNode] = -1
-#         if sourceNode in inD:
-#             s[sourceNode]=-1*math.inf
-#             b[sourceNode]=-1
-#
-#
-#     s[startNode] = 0
-#     b[startNode] = startNode
-#
-#     if endNode not in s:
-#         s[endNode]=0
-#     if endNode not in b:
-#         b[endNode]=-1
-#
-#
-#     print("These have no in degree")
-#     print(inD)
-#     print("These have no out degree")
-#     print(outD)
-#     print()
-#
-#     for i in range(len(map)):
-#         entry=map[i]
-#         currnode = entry[1]
-#         prevNode = entry[0]
-#         weight=entry[2]
-#
-#
-#         if currnode not in outD:
-#             if s[currnode]<s[prevNode]+weight:
-#                     print("node " +str(currnode)+'\'s new value = '+str(s[prevNode]+weight))
-#                     s[currnode]=s[prevNode]+weight
-#                     b[currnode]=prevNode
-#
-#     # Get Path
-#     currnode = endNode
-#     path = []
-#     print(s)
-#     print(b)
-#
-#     while currnode != startNode:
-#         path.append(currnode)
-#         currnode = b[currnode]
-#     path.append(startNode)
-#
-#     print(s[endNode])
-#     PrintListFlat(path[::-1])
-#     return s[endNode], path[::-1]
-#
-# #LongestPathinDAGv2(0,44,'map.txt')
-#
-# def LongestPathinDAGv3(startNode, endNode, filename):
-#     travelList= ModDAGfromFile(filename)
-#     travel=[]
-#     for entry in travelList:
-#         if entry[1] not in travel:
-#             travel.append(entry[1])
-#
-#     map = DAGfromFile(filename)
-#     b={}
-#     for keys in map:
-#
-#         b[keys]=[]
-#         for subkeys in map[keys]:
-#             b[subkeys]=[]
-#
-#     #Finds all previous nodes
-#     for nodes in map:
-#         for outDegree in map[nodes]:
-#             b[outDegree].append(nodes)
-#
-#     b[startNode]=[startNode]
-#
-#     #Begin calculating nodes
-#     s={}
-#     for node in b:
-#         s[node]=-1*math.inf
-#     s[startNode]=0
-#     print(b)
-#     for entry in travelList:
-#         currNode=entry[1]
-#         values=[]
-#         node=[]
-#         predocessors=b[currNode]
-#         for predocessor in predocessors:
-#             values.append(s[predocessor]+map[predocessor][currNode])
-#             node.append(predocessor)
-#         print("Current Node: "+str(currNode))
-#         print("we needed these nodes to get here:")
-#         print(predocessors)
-#         print("Current Scores: ")
-#         PrintListFlat(values)
-#         best=max(values)
-#         print('best value: '+str(best))
-#
-#         for i in range(len(values)):
-#             if values[i]==best:
-#                 s[currNode]=best
-#                 b[currNode]=[node[i]]
-#                 print('best node: '+str(node[i]))
-#                 break
-#         print()
-#
-#     path=[]
-#     currNode=endNode
-#     while currNode!=startNode:
-#         path.append(currNode)
-#         currNode=b[currNode][0]
-#     path.append(startNode)
-#
-#     print(s)
-#     print(b)
-#     print()
-#     print(s[endNode])
-#     PrintListFlat(path[::-1])
-# LongestPathinDAGv3(0,44,'map.txt')
 import copy
 def LongestPathInDAG(startNode,endNode,filename):
     travelList = ModDAGfromFile(filename)
