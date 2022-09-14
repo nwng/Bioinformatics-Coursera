@@ -1,3 +1,10 @@
+# This code was implemented to solve problems from 
+# Genomic Data Science and Clustering (Bioinformatics V)
+
+
+###### The following are helper methods from previous chapters
+# This method reads a matrix from a text file and
+# saves it as a list of lists.
 def MatrixFromText(filename, dest=0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -14,6 +21,7 @@ def MatrixFromText(filename, dest=0):
         matrix.append(toadd)
     return matrix
 
+# This method helps print a list of lists
 def MatrixPrint(Matrix):
     for i in range(len(Matrix)):
         out=''
@@ -21,16 +29,24 @@ def MatrixPrint(Matrix):
             out+=str(round(Matrix[i][j],1)) + " "
         print(out)
 
+# This method prints a list, each element in the list is printed in a new line
 def PrintList(output):
     for i in range(len(output)):
         print(output[i])
-
+        
+# This method combines all elements in a list into a single string
+# and prints the string on a single line
 def PrintListFlat(list):
     out=''
     for  i in range(len(list)):
         out+= str(list[i])+" "
     print(out)
 
+# This method takes a DNA string that is deliminated by
+# a space and stores each DNA sequence as a separate element
+# in a list
+# Input: DNA string that has sequences separated by " "
+# Output: A list that contains each sequence
 def DNAStringtoList(DNA_string):
     curr_seq=''
     DNA_list=[]
@@ -42,7 +58,9 @@ def DNAStringtoList(DNA_string):
             curr_seq=''
     DNA_list.append(curr_seq)
     return DNA_list
+##################
 
+# This is a helper method to read points from a textfile
 def PointsFromFile(filename, dest=0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -67,13 +85,16 @@ def PointsFromFile(filename, dest=0):
             points.append(toAdd)
     return k,m,points
 
+# This method computes the Euclidean Distance between a DataPoint
+# and centers and returns the smallest distance of that point from all centers
+# Input: A list of ints DataPoint and a list of lists of ints Centers
+# Output: A int representing the smallest distance between the datapoints and all
+# centers
 def Distance(DataPoint,Centers):
     k = len(Centers)
     m=len(Centers[0])
-
     d = []
     d_temp = 0
-
     if k!=1:
         for i in range(k):
             center=Centers[i]
@@ -88,6 +109,12 @@ def Distance(DataPoint,Centers):
 
     return min(d)
 
+# This method reads points from a text file and selects
+# centers from the list. The first center is the first point
+# in the file and subsequent centers are the furthest euclidian
+# distance from all existing centers
+# Input: A string filename
+# Output: A list of centers and their coordinates
 def FarthestFirstTraversal(filename,dest=0):
     #Gets Data from the file
     if dest==0:
@@ -133,9 +160,10 @@ def FarthestFirstTraversal(filename,dest=0):
         print(out)
     return centers
 
-
-#FarthestFirstTraversal('trav.txt')
-
+# This method reads points from a text file and calculates
+# the the mean squared distance from each data point to its nearest center
+# Input: A string filename
+# Output: A float distort
 def SqErrorDistortionFromFile(filename,dest=0):
     if dest==0:
         location = "/Users/nathanng/PycharmProjects/bioinfo/"
@@ -177,6 +205,10 @@ def SqErrorDistortionFromFile(filename,dest=0):
     print(round(distort,3))
     return distort
 
+# This method calculates the the mean squared distance 
+# from each data point to its nearest center
+# Input: Lists centers and points containing coordinates
+# Output: A float distort
 def SqErrorDistortion(centers,points):
     distort=0
     for point in points:
@@ -184,8 +216,12 @@ def SqErrorDistortion(centers,points):
     distort/=len(points)
     return distort
 
-import copy
 
+# This method calculates the the point whose i-th coordinate 
+# is the average of the i-th coordinates of all points
+# Input: A list points containing the coordinates for all points
+# Output: A list grav listing the coordinates for the center of gravity
+import copy
 def CenterOfGravity(points):
     n=len(points)
     m=len(points[0])
@@ -226,9 +262,6 @@ def LLoyd(k,m,points):
             out+=str(round(centers[i][j],3))+" "
         print(out)
     return centers
-
-# k,m,points = PointsFromFile('trav.txt')
-# LLoyd(k,m,points)
 
 import random
 def kMeansInit(Data,k):
