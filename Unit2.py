@@ -951,7 +951,6 @@ def LinearSpectrum(Peptide):
         'Y': 163,
         'W': 186
     }
-
     for i in range(1,len(Peptide)+1):
         for key in massTable:
             if key == Peptide[i-1]:
@@ -972,7 +971,6 @@ def CyclicSpectrum(Peptide):
     diff=[]
     for mass in spectrum:
         diff.append(TotalMass-mass)
-
     for value in diff:
         spectrum.append(value)
     spectrum.sort()
@@ -988,6 +986,11 @@ def Subpeptides(n):
         sum+=n-i
     return sum+1
 
+# This method expands a set of peptides by every possible
+# amino acid
+# Input: A set of strings that represent peptides
+# Outout: A set of strings containing every original string
+# expanded by a single amino acid
 def PeptideExpander(peptideSet):
     expanded=set()
     for peptide in peptideSet:
@@ -995,6 +998,11 @@ def PeptideExpander(peptideSet):
             expanded.add(str(peptide)+str(ammino_acid))
     return expanded
 
+# This method expands a set of peptides by the amino acids found
+# in a given spectrum
+# Input: A set of strings that represent peptides
+# Outout: A set of strings containing every original string
+# expanded by a single amino acid
 def LimitedPeptideExpander(peptideSet,convoluted_spec):
     limitedAminoAcids=[]
     for mass in convoluted_spec:
@@ -1007,6 +1015,11 @@ def LimitedPeptideExpander(peptideSet,convoluted_spec):
             expanded.add(str(peptide)+str(ammino_acid))
     return expanded
 
+
+# This method is a branch and bound algorithm
+# Inout: A list that represents the mass spectrum of a peptide
+# Output: A set of strings containing the masses of a linear 
+# peptide sequence that match the spectrum
 import copy
 def CyclopeptideSequencing(Spectrum):
     CandidatePeptide={''}
@@ -1040,6 +1053,8 @@ def CyclopeptideSequencing(Spectrum):
     FinalPeptide=sorted(FinalPeptide)
     return FinalPeptide[::-1]
 
+# This is a helper method to read a spectrum
+# from a text file
 def SpecFromText(filename,dest=0):
     spec=[]
     if dest==0:
@@ -1054,6 +1069,10 @@ def SpecFromText(filename,dest=0):
             spec.append(int(entry.strip()))
     return spec
 
+# Thie method scores a given peptide and a mass spectrum
+# the higher the score, the more the two match
+# Input: A string pep and a list of int masses spec
+# Output: A int count that represents the score
 def PeptideScore(pep,spec):
     count=0
     pep_spec=CyclicSpectrum(pep)
