@@ -151,9 +151,10 @@ def ManhattanTourist(n, m, Down, Right):
     #MatrixPrint(s)
     return s[-1][-1]
 
-# LCSBacktrack solves
+# LCSBacktrack produces a matrix
 # Input: Two strings v and w
-# Output: A list of lists
+# Output: A list of lists backTrack that store pointers that reconstruct
+# the longest common string between strings v and w
 def LCSBacktrack(v,w):
     s = [[0] * (len(w)+1) for i in range(len(v)+1)]
     backTrack = [[0] * (len(w)+1) for i in range(len(v)+1)]
