@@ -1069,7 +1069,7 @@ def SpecFromText(filename,dest=0):
             spec.append(int(entry.strip()))
     return spec
 
-# Thie method scores a given peptide and a mass spectrum
+# Thie method scores a given cyclic peptide and a mass spectrum
 # the higher the score, the more the two match
 # Input: A string pep and a list of int masses spec
 # Output: A int count that represents the score
@@ -1097,6 +1097,10 @@ def PeptideScore(pep,spec):
             count+=min(pepDict[keys],specDict[keys])
     return count
 
+# Thie method scores a given linear peptide and a mass spectrum
+# the higher the score, the more the two match
+# Input: A string pep and a list of int masses spec
+# Output: A int count that represents the score
 def LinearPeptideScore(pep,spec):
     count=0
     pep_spec=LinearSpectrum(pep)
@@ -1121,6 +1125,12 @@ def LinearPeptideScore(pep,spec):
             count+=min(pepDict[keys],specDict[keys])
     return count
 
+# This method trims a list so that only the top n peptides
+# are kept
+# Input: A set of strings Leaderboard containing peptides, a
+# list Spectrum that contains the masses of peptide fragments,
+# and a positive int n that represents the top ranking
+# Output A list trim_Leaderboard
 import pandas as pd
 def Trim(Leaderboard,Spectrum,n):
     print("Making Dataframe...")
@@ -1141,6 +1151,10 @@ def Trim(Leaderboard,Spectrum,n):
             trim_Leaderboard.append(str(df.loc[index,'peptide']))
     return trim_Leaderboard
 
+# This method sequences a cyclopeptide with a noisy spectrum
+# Input: A list of int masses Spectrum and a positive int N
+# Output: A string with the best scoring peptide with the given 
+# mass spectrum
 def LeaderboardCyclopeptideSequencing(Spectrum,N):
     LeaderBoard={''}
     LeaderPeptide=""
@@ -1167,6 +1181,12 @@ def LeaderboardCyclopeptideSequencing(Spectrum,N):
     print(PeptideToMass(LeaderPeptide[::-1]))
     return LeaderPeptide[::-1]
 
+# This method generates a convoluted spectrum
+# from a given mass spectrum. Convolution of a spectrum is done by taking 
+# all positive differences of masses in the spectrum and storing them
+# Input: A list of int masses spectrum
+# Output: The list of elements in the convolution of spectrum 
+# If an element has multiplicity k, it should appear exactly k times
 def SpectrumConvolution(spectrum):
     convolution={}
     for i in range(1,len(spectrum)):
@@ -1184,10 +1204,18 @@ def SpectrumConvolution(spectrum):
     # print(out)
     return convolution
 
+# This method sequences a cyclopeptide using convolution
+# This accounts for missing masses in a noisy experimental 
+# spectrum
+# Input: A positive  int m that selects the top m masses in a
+# convoluted spectrum, a positive int n that selects the top n
+# scoring peptides, and a list of ints Spectrum that is the mass
+# spectrum of a protein
+# Output: A string LeaderPeptide that is the best scoring peptide
+# of a given spectrum
 def ConvolutionCyclopeptideSequencing(M,N,Spectrum):
     convolution = SpectrumConvolution(Spectrum)
     #Eliminating infrequent Convolutions
-
     trim_convolutions=[]
     print("Making Dataframe...")
     d = {'mass': [], 'freq': []}
