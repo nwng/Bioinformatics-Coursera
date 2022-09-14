@@ -307,5 +307,78 @@ BLOSUM62={'A': {'A': 4, 'C': 0, 'E': -1, 'D': -2, 'G': 0, 'F': -2, 'I': -1, 'H':
           'Y': {'A': -2, 'C': -2, 'E': -2, 'D': -3, 'G': -3, 'F': 3, 'I': -1, 'H': 2, 'K': -2, 'M': -1, 'L': -1,
                 'N': -2, 'Q': -1, 'P': -3, 'S': -2, 'R': -2, 'T': -2, 'W': 2, 'V': -1, 'Y': 7}}
 
+######### The following code is still work in progress
 
+# This method reconstructs the alignment of a string to another
+# string
+# Input: A list backtrack that has pointers, string v,
+# and two ints i and j
+# Output: A string that is the longest common string
+def OutputLCS_Global(backtrack,v,i,j):
+    if i == 0 and j == 0:
+        return ""
+    if i == 0 or j == 0:
+        return "-"
+    
+    if len(v)==len(backtrack)-1:
+        if backtrack[i][j]=="V":
+            return OutputLCS_Global(backtrack,v,i-1,j) + v[i-1]
+        elif backtrack[i][j]==">":
+            return OutputLCS_Global(backtrack,v,i,j-1) + '-'
+        else:
+            return OutputLCS_Global(backtrack,v,i-1,j-1) + v[i-1]
+    else:
+        if backtrack[i][j]=="V":
+            return OutputLCS_Global(backtrack,v,i-1,j) + '-'
+        elif backtrack[i][j]==">":
+            return OutputLCS_Global(backtrack,v,i,j-1) + v[i-1]
+        else:
+            return OutputLCS_Global(backtrack,v,i-1,j-1) + v[i-1]
+
+# This method finds a highest-scoring alignment of two strings as defined 
+# by a scoring parameters
+# Input: Three ints match reward, a mismatch penalty, an indel penalty,
+# and two nucleotide strings v and w.
+# Output: The maximum alignment score of these strings followed by an alignment 
+# achieving this maximum score
+def GlobalAlignmentProblem(match,mismatchPenalty,inDelPenalty,v,w):
+    s = [[0] * (len(w)+1) for i in range(len(v)+1)]
+    backTrack = [[0] * (len(w)+1) for i in range(len(v)+1)]
+
+    for i in range(1,len(s[0])):
+        s[0][i]=s[0][i-1]-inDelPenalty
+    for i in range(1,len(s)):
+        s[i][0]=s[i-1][0]-inDelPenalty
+
+    for i in range(1,len(v)+1):
+        for j in range(1,len(w)+1):
+            score=0
+            if v[i-1]==w[j-1]:
+                score=match
+            else:
+                score=-mismatchPenalty
+            s[i][j]=max(
+                s[i-1][j]-inDelPenalty,
+                s[i][j-1]-inDelPenalty,
+                s[i-1][j-1] + score
+            )
+            #Begin Constructing the backtrack
+            if s[i][j]==s[i-1][j]-inDelPenalty:
+                backTrack[i][j]="V"
+            elif s[i][j]==s[i][j-1]-inDelPenalty:
+                backTrack[i][j]='>'
+            elif s[i][j]==s[i-1][j-1]+score:
+                backTrack[i][j]="\\"
+
+    MatrixPrint(s)
+    print()
+    MatrixPrint(backTrack)
+    print()
+    print(s[-1][-1])
+    print(OutputLCS_Global(backTrack,v,len(v),len(w)))
+    print(OutputLCS_Global(backTrack, w, len(v), len(w)))
+
+v='TCA'
+w='CA'
+GlobalAlignmentProblem(2,5,1,v,w)
 
